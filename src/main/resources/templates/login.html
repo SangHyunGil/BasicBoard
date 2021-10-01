@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body id="LoginForm">
+<div class="container">
+    <div class="login-form">
+        <div class="main-div">
+            <div class="panel">
+                <h2>로그인</h2>
+                <p>아이디와 비밀번호를 입력하세요.</p>
+            </div>
+            <form id="Login" th:action th:method="post" th:object="${loginForm}">
+                <div class="form-group">
+                    <input type="email" class="form-control" th:field="*{email}" placeholder="아이디">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" th:field="*{password}" placeholder="비밀번호">
+                </div>
+                <div class="forgot">
+                    <a th:href="@{/register}">회원가입을 진행해보세요.</a>
+                </div>
+                <button type="submit" class="btn btn-primary">로그인</button>
+                <div>
+                    <br>
+                    <div th:if="${#fields.hasGlobalErrors()}">
+                        <label class="err cols-sm-2 control-label" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></label>
+                    </div>
+                    <label class="err control-label" th:errors="*{email}"></label>
+                    <label class="err control-label" th:errors="*{password}"></label>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body id="LoginForm">
+<div class="well">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>학과</th>
+            <th>전공</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student : ${students}">
+            <td th:text="${studentStat.count}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.email}"></td>
+            <td th:text="${student.department}"></td>
+            <td th:text="${student.major}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div align="center">
+    <button class="btn btn-primary btn-lg login-button" th:onclick="|location.href='@{/main}'|">뒤로 가기</button>
+</div>
+
+</body>
+</html>

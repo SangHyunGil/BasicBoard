@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body id="LoginForm">
+<div class="container">
+    <div class="col justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">회원가입</div>
+                <div class="card-body">
+
+                    <form class="form-horizontal" th:method="post" th:action th:object="${registerForm}">
+                        <div class="form-group">
+                            <label for="email" class="cols-sm-2 control-label">이메일</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="이메일을 입력하세요." />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="cols-sm-2 control-label">비밀번호</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                    <input type="password" class="form-control" th:field="*{password}"  id="password" placeholder="비밀번호를 입력하세요" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordConfirm" class="cols-sm-2 control-label">비밀번호 확인</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                    <input type="password" class="form-control" th:field="*{passwordConfirm}"  id="passwordConfirm" placeholder="비밀번호를 입력하세요." />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="cols-sm-2 control-label">이름</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="이름을 입력하세요" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="nickname" class="cols-sm-2 control-label">닉네임</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control" th:field="*{nickname}" id="nickname" placeholder="닉네임을 입력하세요" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="department" class="cols-sm-2 control-label">학과</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control" th:field="*{department}" id="department" placeholder="학과를 입력하세요." />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="major" class="cols-sm-2 control-label">전공</label>
+                            <div class="cols-sm-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control" th:field="*{major}" id="major" placeholder="전공을 입력하세요." />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">등록</button>
+                        </div>
+                        <div class="login-register">
+                            <a th:href="@{/login}">로그인하러가기</a>
+                        </div>
+                        <div align="center">
+                            <div th:if="${#fields.hasGlobalErrors()}">
+                                <label class="err cols-sm-2 control-label" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></label>
+                            </div>
+                            <label class="err cols-sm-2 control-label" th:errors="${registerForm.email}"></label>
+                            <label class="err cols-sm-2 control-label" th:errors="${registerForm.password}"></label>
+                            <label class="err cols-sm-2 control-label" th:errors="${registerForm.passwordConfirm}"></label>
+                            <label class="err cols-sm-2 control-label" th:errors="${registerForm.name}"></label>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

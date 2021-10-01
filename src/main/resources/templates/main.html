@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body id="LoginForm">
+<div class="custom1">
+    <h1 th:field="${loginStudent.name}" th:text="|환영합니다. ${loginStudent.name}님!|"/>
+    <nav>
+        <ul>
+            <form method="post" th:action="@{/main/logout}">
+                <button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/student}'|">가입학생</button>
+                <button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/board}'|">게시판</button>
+                <button type="button submit" class="btn btn-default btn-lg btn3d">로그아웃</button>
+            </form>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body id="LoginForm">
+<div class="container">
+    <br>
+    <h1 class="text-center">학생 게시판</h1>
+    <br>
+
+    <table class="table table-hover table-striped text-center" style="border: 1px solid">
+        <thead>
+            <tr>
+                <th class="text-center">번호</th>
+                <th class="text-center">제목</th>
+                <th class="text-center">글쓴이</th>
+                <th class="text-center">작성시간</th>
+            </tr>
+        </thead>
+            <tbody>
+             <tr th:each="board : ${boards}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
+                    <td th:field="${board.id}" th:text="${board.id}"></td>
+                    <td th:field="${board.title}" th:text="${board.title}"></td>
+                    <td th:field="${board.content}" th:text="${board.writer}"></td>
+                    <td th:field="${board.writeTime}" th:text="${{board.writeTime}}"></td>
+             </tr>
+        </tbody>
+    </table>
+</div>
+<button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/board/post}'|">글쓰기</button>
+<button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main}'|">메인으로</button>
+</body>
+</html>
