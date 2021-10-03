@@ -7,10 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import register.demo.domain.student.Student;
-import register.demo.domain.student.StudentRepository;
-import register.demo.domain.student.StudentService;
+import register.demo.domain.student.*;
 import register.demo.web.annotation.login.Login;
 import register.demo.web.login.LoginForm;
 

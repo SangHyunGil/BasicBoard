@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import register.demo.domain.student.Student;
 import register.demo.domain.login.LoginService;
+import register.demo.domain.student.Student;
 import register.demo.web.session.SessionConst;
 
 import javax.servlet.http.HttpServletRequest;

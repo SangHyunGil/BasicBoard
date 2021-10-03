@@ -3,10 +3,9 @@ package register.demo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import register.demo.domain.board.Board;
-import register.demo.domain.board.BoardRepository;
-import register.demo.domain.comments.Comment;
+import register.demo.domain.board.BoardMemoryRepository;
 import register.demo.domain.student.Student;
-import register.demo.domain.student.StudentRepository;
+import register.demo.domain.student.StudentMemoryRepository;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -14,8 +13,8 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class TestData {
-    private final StudentRepository studentRepository;
-    private final BoardRepository boardRepository;
+    private final StudentMemoryRepository studentRepository;
+    private final BoardMemoryRepository boardRepository;
 
     @PostConstruct
     public void init() {

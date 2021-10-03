@@ -1,25 +1,12 @@
 package register.demo.domain.board;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class BoardService {
+public interface BoardService {
 
-    private final BoardRepository boardRepository;
+    void post(Board board);
 
-    public void post(Board board) {
-        boardRepository.savePost(board);
-    }
+    Board findBoard(Long id);
 
-    public Board findBoard(Long id) {
-        return boardRepository.findById(id);
-    }
-
-    public List<Board> findBoards() {
-        return boardRepository.findAllPost();
-    }
+    List<Board> findBoards();
 }

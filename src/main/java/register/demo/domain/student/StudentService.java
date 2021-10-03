@@ -1,30 +1,14 @@
 package register.demo.domain.student;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-public class StudentService {
+public interface StudentService {
+    void join(Student student);
 
-    private final StudentRepository studentRepository;
+    Student findStudent(Long id);
 
-    public void join(Student student) {
-        studentRepository.save(student);
-    }
+    Optional<Student> findStudent(String email);
 
-    public Student findStudent(Long id) {
-        return studentRepository.findById(id);
-    }
-
-    public Optional<Student> findStudent(String email) {
-        return studentRepository.findByEmail(email);
-    }
-
-    public List<Student> findAllStudent() {
-        return studentRepository.findAll();
-    }
+    List<Student> findAllStudent();
 }

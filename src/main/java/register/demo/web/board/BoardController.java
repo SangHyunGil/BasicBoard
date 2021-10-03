@@ -9,14 +9,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
-import register.demo.domain.login.LoginService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.domain.student.StudentServiceImpl;
 import register.demo.web.annotation.login.Login;
 import register.demo.web.login.LoginForm;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j

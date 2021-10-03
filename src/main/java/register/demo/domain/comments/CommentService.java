@@ -1,30 +1,13 @@
 package register.demo.domain.comments;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class CommentService {
+public interface CommentService {
+    void reply(Long id, Comment comment);
 
-    private final CommentRepository commentRepository;
+    List<Comment> findComments(Long id);
 
-    public void reply(Long id, Comment comment) {
-        commentRepository.saveComment(id, comment);
-    }
+    void delete(Long boardId, Long commentId);
 
-    public List<Comment> findComments(Long id) {
-        return commentRepository.findAllComment(id);
-    }
-
-    public void delete(Long boardId, Long commentId) {
-        commentRepository.deleteComment(boardId, commentId);
-    }
-
-    public void update(Long boardId, Long commentId, String content) {
-        commentRepository.updateComment(boardId, commentId, content);
-    }
+    void update(Long boardId, Long commentId, String content);
 }
