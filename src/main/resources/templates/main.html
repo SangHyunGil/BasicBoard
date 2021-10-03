@@ -10,7 +10,7 @@
 </head>
 <body id="LoginForm">
 <div class="custom1">
-    <h1 th:field="${loginStudent.name}" th:text="|환영합니다. ${loginStudent.name}님!|"/>
+    <h1 th:field="${loginStudent.name}" th:text="|환영합니다. ${loginStudent.nickname}님!|"/>
     <nav>
         <ul>
             <form method="post" th:action="@{/main/logout}">

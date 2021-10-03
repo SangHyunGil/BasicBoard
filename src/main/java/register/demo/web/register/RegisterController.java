@@ -32,13 +32,18 @@ public class RegisterController {
     public String doRegister(@Validated @ModelAttribute RegisterForm registerForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
 
-        if(isExistStudent(registerForm).isPresent()) {
-            bindingResult.reject("existStudent", null);
+        if(isExistEmail(registerForm).isPresent()) {
+            bindingResult.reject("existEmail", null);
         }
 
         if(!registerForm.getPassword().equals(registerForm.getPasswordConfirm())) {
             bindingResult.reject("passwordFail", null);
         }
+
+        if(isExistNickname(registerForm).isPresent()) {
+            bindingResult.reject("existNickname", null);
+        }
+
         log.info("bindingresult - " + bindingResult);
         if (bindingResult.hasErrors()) {
             return "register";
@@ -55,7 +60,13 @@ public class RegisterController {
         return "redirect:/";
     }
 
-    private Optional<Student> isExistStudent(RegisterForm registerForm) {
+    private Optional<Student> isExistNickname(RegisterForm registerForm) {
+        return studentService.findAllStudent().stream()
+                .filter(m -> m.getNickname().equals(registerForm.getNickname()))
+                .findAny();
+    }
+
+    private Optional<Student> isExistEmail(RegisterForm registerForm) {
         return studentService.findAllStudent().stream()
                 .filter(m -> m.getEmail().equals(registerForm.getEmail()))
                 .findAny();

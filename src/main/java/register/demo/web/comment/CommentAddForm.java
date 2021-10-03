@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CommentForm {
+public class CommentAddForm {
     private String content;
 
-    public CommentForm() {
+    public CommentAddForm() {
     }
 }

@@ -50,16 +50,19 @@ public class BoardController {
         }
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        Board board = new Board(boardForm.getTitle(), student.get().getName(), boardForm.getContent(), LocalDateTime.now());
+        Board board = new Board(boardForm.getTitle(), student.get().getNickname(), boardForm.getContent(), LocalDateTime.now());
         boardService.post(board);
         return "redirect:/main/board";
     }
 
     @GetMapping("/{postId}")
-    public String showPosting(@PathVariable Long postId, Model model) {
+    public String showPosting(@Login LoginForm loginForm, @PathVariable Long postId, Model model) {
         log.info("loging");
         Board board = boardService.findBoard(postId);
         model.addAttribute("board", board);
+
+        Optional<Student> student = studentService.findStudent(loginForm.getEmail());
+        model.addAttribute("student", student.get());
         return "posting";
     }
 }

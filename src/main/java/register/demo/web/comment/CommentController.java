@@ -26,14 +26,22 @@ public class CommentController {
 
     @GetMapping("/main/board/{id}/comment")
     public List<Comment> getCommentList(@PathVariable Long id){
-        log.info("comment : ", id);
+        log.info("loadComment : {}", id);
         return commentService.findComments(id);
     }
 
     @PostMapping("/main/board/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestBody CommentForm commentForm, @Login LoginForm loginForm) {
+    public String addComment(@PathVariable Long id, @RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
+        log.info("addComment : {}, {}", id, commentAddForm.getContent());
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        commentService.reply(id, new Comment(student.get().getName(), commentForm.getContent(), LocalDateTime.now()));
+        commentService.reply(id, new Comment(student.get().getNickname(), commentAddForm.getContent(), LocalDateTime.now()));
+        return "true";
+    }
+
+    @DeleteMapping("/main/board/{id}/comment")
+    public String deleteComment(@PathVariable Long id, @RequestBody CommentDeleteForm commentDeleteForm) {
+        log.info("deleteComment : {}, {}", id, commentDeleteForm.getCommentId());
+        commentService.delete(id, commentDeleteForm.getCommentId());
         return "true";
     }
 }

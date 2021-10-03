@@ -18,6 +18,7 @@ public class RegisterForm {
     private String passwordConfirm;
     @NotBlank
     private String name;
+    @NotBlank
     private String nickname;
     private String department;
     private String major;
