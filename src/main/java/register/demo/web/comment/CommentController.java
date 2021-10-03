@@ -40,8 +40,15 @@ public class CommentController {
 
     @DeleteMapping("/main/board/{id}/comment")
     public String deleteComment(@PathVariable Long id, @RequestBody CommentDeleteForm commentDeleteForm) {
-        log.info("deleteComment : {}, {}", id, commentDeleteForm.getCommentId());
+        log.info("deleteComment : {}", id, commentDeleteForm.getCommentId());
         commentService.delete(id, commentDeleteForm.getCommentId());
+        return "true";
+    }
+
+    @PatchMapping("/main/board/{id}/comment")
+    public String updateComment(@PathVariable Long id, @RequestBody CommentUpdateForm commentUpdateForm) {
+        log.info("updateComment : {}, {}", id, commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
+        commentService.update(id, commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
         return "true";
     }
 }

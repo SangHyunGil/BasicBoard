@@ -69,23 +69,26 @@
                 let html = "";
                 for (const i in data) {
                     let cId = data[i].id;
-                    let writer = data[i].writer;
-                    let content = data[i].content;
-                    let writeTime = data[i].writeTime;
+                    let cWriter = data[i].writer;
+                    let cContent = data[i].content;
+                    let cwriteTime = data[i].writeTime;
 
-                    html += "<div style='border: 1px solid black; margin-bottom: 5px'>";
+                    html += "<div id='cm"+ cId + "' style='border: 1px solid black; margin-bottom: 5px'>";
                     html += "<div>";
-                    html += "<b>" + "작성자 :" + writer + "</b>";
+                    html += "<b>" + "작성자 :" + cWriter + "</b>";
                     html += "</div>";
                     html += "<div>";
-                    html += "내용 "  + content;
+                    html += "내용 "  + cContent;
                     html += "</div>";
                     html += "<div>";
-                    html += "작성 시간 " + writeTime;
+                    html += "작성 시간 " + cwriteTime;
                     html += "</div>";
-                    if (writer == [[ ${student.nickname }]]) {
+                    if (cWriter == [[ ${student.nickname }]]) {
                         html += "<div>";
                         html += "<a href='javacript:void(0);' onclick='commentDelete(" + cId + ")'>댓글 삭제</a>";
+                        html += "</div>";
+                        html += "<div>";
+                        html += "<a href='javacript:void(0);' onclick='commentEdit(" + cId + ", \"" + cWriter + "\", \"" + cContent + "\")'>댓글 수정</a>";
                         html += "</div>";
                     }
                     html += "</div>";
@@ -108,7 +111,7 @@
             data: JSON.stringify({
                 "content" : content.value
             }),
-            success : function (data) {
+            success : function () {
                 console.log("댓글 저장 성공");
                 commentLoad(boardId);
                 content.value = "";
@@ -128,8 +131,61 @@
             data: JSON.stringify({
                 "commentId" : commentId
             }),
-            success : function (data) {
+            success : function () {
                 console.log("댓글 삭제 성공");
+                commentLoad(boardId);
+            },
+            error:function () {
+                alert('댓글삭제 에러');
+            }
+        });
+    }
+
+    const commentEdit = function(commentId, commentWriter, commentContent) {
+
+        console.log("댓글 Load");
+
+        let html = "";
+
+        html += "<div id='cm"+ commentId + "' style='border: 1px solid black; margin-bottom: 5px'>";
+        html += "<div>";
+        html += "<b>" + "작성자 :" + commentWriter + "</b>";
+        html += "</div>";
+        html += "<div>";
+        html += "<textarea class='form-group' id = 'editComment"+commentId+"'>";
+        html += commentContent;
+        html += "</textarea >";
+        html += "</div>";
+        html += "<div>";
+
+        html += "<div>";
+        html += "<a href='javacript:void(0);' onclick='commentUpdate(" + commentId + ")'>저장</a>";
+        html += "</div>";
+        html += "<div>";
+        html += "<a href='javacript:void(0);' onclick='commentLoad(boardId)'>취소</a>";
+        html += "</div>";
+
+        html += "</div>";
+
+        $("#cm"+commentId).replaceWith(html);
+    }
+
+    const commentUpdate = function(commentId) {
+
+        console.log("댓글 Load");
+
+        let commentContent = document.getElementById("editComment"+commentId).value;
+
+        $.ajax({
+            url : commentUrl,
+            type : 'patch',
+            contentType: "application/json",
+            data: JSON.stringify({
+                "commentId" : commentId,
+                "content" : commentContent
+            }),
+            success : function () {
+                console.log("댓글 수정 성공");
                 commentLoad(boardId);
             },
             error:function () {

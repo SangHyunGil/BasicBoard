@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +27,23 @@ public class CommentRepository {
 
     public void deleteComment(Long boardId, Long commentId) {
         List<Comment> comments = boardRepository.findById(boardId).getComments();
-        for (Comment comment : comments) {
-            log.info("comment.getId() = {}, {}", comment.getId(), commentId);
-        }
+
         comments.remove(comments.stream()
                 .filter(comment -> comment.getId() == commentId)
                 .findAny().get());
-
     }
+
+    public void updateComment(Long boardId, Long commentId, String content) {
+        List<Comment> comments = boardRepository.findById(boardId).getComments();
+
+        Comment updateComment = comments.stream()
+                .filter(comment -> comment.getId() == commentId)
+                .findAny().get();
+        updateComment.setContent(content);
+        updateComment.setWriteTime(LocalDateTime.now());
+    }
+
+
 
     public List<Comment> findAllComment(Long id) {
         return new ArrayList<>(boardRepository.findById(id).getComments());
