@@ -24,31 +24,39 @@ public class CommentController {
     private final CommentService commentService;
     private final StudentService studentService;
 
-    @GetMapping("/main/board/{id}/comment")
-    public List<Comment> getCommentList(@PathVariable Long id){
-        log.info("loadComment : {}", id);
-        return commentService.findComments(id);
+    @GetMapping("/main/board/comment")
+    public List<Comment> getCommentList(@RequestParam Long boardId){
+        log.info("loadComment : {}", boardId);
+        return commentService.findComments(boardId);
     }
 
-    @PostMapping("/main/board/{id}/comment")
-    public String addComment(@PathVariable Long id, @RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
-        log.info("addComment : {}, {}", id, commentAddForm.getContent());
+    @PostMapping("/main/board/comment")
+    public String addComment(@RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
+        log.info("addComment : {}, {}", commentAddForm.getBoardId(), commentAddForm.getContent());
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        commentService.reply(id, new Comment(student.get().getNickname(), commentAddForm.getContent(), LocalDateTime.now()));
+        commentService.addComment(commentAddForm.getBoardId(), new Comment(student.get().getNickname(), commentAddForm.getContent(), LocalDateTime.now()));
         return "true";
     }
 
-    @DeleteMapping("/main/board/{id}/comment")
-    public String deleteComment(@PathVariable Long id, @RequestBody CommentDeleteForm commentDeleteForm) {
-        log.info("deleteComment : {}", id, commentDeleteForm.getCommentId());
-        commentService.delete(id, commentDeleteForm.getCommentId());
+    @PostMapping("/main/board/comment/reply")
+    public String replyComment(@RequestBody CommentReplyForm commentReplyForm, @Login LoginForm loginForm) {
+        log.info("replyComment : {}, {}", commentReplyForm.getParentId(), commentReplyForm.getContent());
+        Optional<Student> student = studentService.findStudent(loginForm.getEmail());
+        commentService.replyComment(commentReplyForm.getParentId(), new Comment(student.get().getNickname(), commentReplyForm.getContent(), LocalDateTime.now()));
         return "true";
     }
 
-    @PatchMapping("/main/board/{id}/comment")
-    public String updateComment(@PathVariable Long id, @RequestBody CommentUpdateForm commentUpdateForm) {
-        log.info("updateComment : {}, {}", id, commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
-        commentService.update(id, commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
+    @DeleteMapping("/main/board/comment")
+    public String deleteComment(@RequestBody CommentDeleteForm commentDeleteForm) {
+        log.info("deleteComment : {}", commentDeleteForm.getCommentId());
+        commentService.deleteComment(commentDeleteForm.getBoardId(), commentDeleteForm.getCommentId());
+        return "true";
+    }
+
+    @PatchMapping("/main/board/comment")
+    public String updateComment( @RequestBody CommentUpdateForm commentUpdateForm) {
+        log.info("updateComment : {}, {}", commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
+        commentService.updateComment(commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
         return "true";
     }
 }

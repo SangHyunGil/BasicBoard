@@ -1,6 +1,5 @@
 package register.demo.domain.comments;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,13 +11,14 @@ import java.util.List;
 @Setter
 public class Comment {
     private Long id;
-    private String writer;
+    private String nickname;
     private String Content;
-    //private List<Comment> children = new ArrayList<>();
+    private Long parentId;
+    private List<Comment> children = new ArrayList<>();
     private LocalDateTime writeTime;
 
     public Comment(String writer, String content, LocalDateTime writeTime) {
-        this.writer = writer;
+        this.nickname = writer;
         Content = content;
         this.writeTime = writeTime;
     }

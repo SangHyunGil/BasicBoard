@@ -11,19 +11,23 @@ public class CommentServiceImpl implements CommentService{
 
     private final CommentRepository commentRepository;
 
-    public void reply(Long id, Comment comment) {
-        commentRepository.saveComment(id, comment);
+    public void addComment(Long boardId, Comment comment) {
+        commentRepository.saveComment(boardId, comment);
     }
 
-    public List<Comment> findComments(Long id) {
-        return commentRepository.findAllComment(id);
+    public List<Comment> findComments(Long boardId) {
+        return commentRepository.findAllComment(boardId);
     }
 
-    public void delete(Long boardId, Long commentId) {
+    public void deleteComment(Long boardId, Long commentId) {
         commentRepository.deleteComment(boardId, commentId);
     }
 
-    public void update(Long boardId, Long commentId, String content) {
-        commentRepository.updateComment(boardId, commentId, content);
+    public void updateComment(Long commentId, String content) {
+        commentRepository.updateComment(commentId, content);
+    }
+
+    public void replyComment(Long parentId, Comment childComment) {
+        commentRepository.replyComment(parentId, childComment);
     }
 }

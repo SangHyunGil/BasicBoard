@@ -11,7 +11,6 @@ import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
-import register.demo.domain.student.StudentServiceImpl;
 import register.demo.web.annotation.login.Login;
 import register.demo.web.login.LoginForm;
 

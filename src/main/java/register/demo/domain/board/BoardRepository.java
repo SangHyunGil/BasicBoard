@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface BoardRepository {
 
-    Board savePost(Board board);
+    void savePost(Board board);
 
     Board findById(Long id);
 

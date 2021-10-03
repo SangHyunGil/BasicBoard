@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import register.demo.domain.student.StudentRepository;
 import register.demo.web.login.LoginForm;
 import register.demo.domain.student.Student;
-import register.demo.domain.student.StudentMemoryRepository;
 
 @Service
 @RequiredArgsConstructor

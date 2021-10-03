@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CommentDeleteForm {
-    private Long boardId;
-    private Long commentId;
+public class CommentReplyForm {
+    private Long parentId;
+    private String content;
 
-    public CommentDeleteForm() {
+    public CommentReplyForm() {
     }
 }

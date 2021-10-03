@@ -7,7 +7,9 @@ public interface CommentRepository {
 
     void deleteComment(Long boardId, Long commentId);
 
-    void updateComment(Long boardId, Long commentId, String content);
+    void updateComment(Long commentId, String content);
+
+    void replyComment(Long commentId, Comment comment);
 
     List<Comment> findAllComment(Long id);
 }

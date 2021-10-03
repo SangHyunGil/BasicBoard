@@ -52,9 +52,9 @@
 </body>
 <script th:inline="javascript">
     var boardId = [[${board.id}]];
-    var commentUrl = boardId + "/comment";
+    var commentUrl = "comment";
     $(function(){
-        commentLoad(boardId)
+        commentLoad([[${board.id}]])
     });
 
     const commentLoad = function(no) {
@@ -62,20 +62,21 @@
         $.ajax({
             url : commentUrl,
             type : 'get',
-            dataType : "json",
+            data : ({"boardId" : boardId}),
             success : function (data) {
                 console.log("댓글 Load");
 
                 let html = "";
                 for (const i in data) {
                     let cId = data[i].id;
-                    let cWriter = data[i].writer;
+                    let cNickname = data[i].nickname;
                     let cContent = data[i].content;
+                    let cChildren = data[i].children;
                     let cwriteTime = data[i].writeTime;
 
                     html += "<div id='cm"+ cId + "' style='border: 1px solid black; margin-bottom: 5px'>";
                     html += "<div>";
-                    html += "<b>" + "작성자 :" + cWriter + "</b>";
+                    html += "<b>" + "작성자 :" + cNickname + "</b>";
                     html += "</div>";
                     html += "<div>";
                     html += "내용 "  + cContent;
@@ -83,20 +84,57 @@
                     html += "<div>";
                     html += "작성 시간 " + cwriteTime;
                     html += "</div>";
-                    if (cWriter == [[ ${student.nickname }]]) {
-                        html += "<div>";
-                        html += "<a href='javacript:void(0);' onclick='commentDelete(" + cId + ")'>댓글 삭제</a>";
-                        html += "</div>";
-                        html += "<div>";
-                        html += "<a href='javacript:void(0);' onclick='commentEdit(" + cId + ", \"" + cWriter + "\", \"" + cContent + "\")'>댓글 수정</a>";
-                        html += "</div>";
+                    html += "<div>";
+                    if (cContent != "삭제된 메세지입니다.") {
+                        html += "<a href='javacript:void(0);' onclick='commentReply(" + cId + ")'>답글 달기</a>";
+                        if (cNickname == [[ ${student.nickname }]]) {
+                            html += "<div>";
+                            html += "<a href='javacript:void(0);' onclick='commentDelete(" + cId + ")'>댓글 삭제</a>";
+                            html += "</div>";
+                            html += "<div>";
+                            html += "<a href='javacript:void(0);' onclick='commentEdit(" + cId + ", \"" + cNickname + "\", \"" + cContent + "\")'>댓글 수정</a>";
+                            html += "</div>";
+                        }
                     }
+                    while (cChildren.length != 0) {
+                        let child = cChildren.pop();
+                        html += "<div id='cm"+ child.id + "' style='border: 1px solid black; margin-bottom: 5px'>";
+                        html += "<div>";
+                        html += "<b>" + "작성자 :" + child.nickname + "</b>";
+                        html += "</div>";
+                        html += "<div>";
+                        html += "내용 "  + child.content;
+                        html += "</div>";
+                        html += "<div>";
+                        html += "작성 시간 " + child.writeTime;
+                        html += "</div>";
+                        html += "<div>";
+
+                        if (child.content != "삭제된 메세지입니다.") {
+                            html += "<a href='javacript:void(0);' id = 're"+child.id+"' onclick='commentReply(" + child.id + ")'>답글 달기</a>";
+                            if (child.nickname == [[ ${student.nickname }]]) {
+                                html += "<div>";
+                                html += "<a href='javacript:void(0);' onclick='commentDelete(" + child.id + ")'>댓글 삭제</a>";
+                                html += "</div>";
+                                html += "<div>";
+                                html += "<a href='javacript:void(0);' onclick='commentEdit(" + child.id + ", \"" + child.writer + "\", \"" + child.content + "\")'>댓글 수정</a>";
+                                html += "</div>";
+                            }
+                        }
+                        while (child.children.length != 0) {
+                            cChildren.unshift(child.children.pop());
+                        }
+                    }
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "</div>";
                     html += "</div>";
                 };
                 $(".reply_list"+no).html(html);
             },
             error:function () {
-                alert('서버 에러');
+                alert('댓글 로드 에러');
             }
         });
     };
@@ -109,6 +147,7 @@
             type : 'post',
             contentType: "application/json",
             data: JSON.stringify({
+                "boardId" : boardId,
                 "content" : content.value
             }),
             success : function () {
@@ -117,7 +156,7 @@
                 content.value = "";
             },
             error:function () {
-                alert('서버 에러');
+                alert('댓글 저장 에러');
             }
         });
     }
@@ -129,6 +168,7 @@
             type : 'delete',
             contentType: "application/json",
             data: JSON.stringify({
+                "boardId" : boardId,
                 "commentId" : commentId
             }),
             success : function () {
@@ -136,14 +176,14 @@
                 commentLoad(boardId);
             },
             error:function () {
-                alert('댓글삭제 에러');
+                alert('댓글 삭제 에러');
             }
         });
     }
 
     const commentEdit = function(commentId, commentWriter, commentContent) {
 
-        console.log("댓글 Load");
+        console.log("댓글 수정");
 
         let html = "";
 
@@ -190,6 +230,39 @@
             },
             error:function () {
                 alert('댓글삭제 에러');
+            }
+        });
+    }
+
+    const commentReply = function(commentId) {
+        let html = "";
+
+        html += "&nbsp";
+        html += "<div class='mb-3' style='display: flex;'>";
+        html += "<input type='text' class='form-control' id='reply"+ commentId + "' placeholder='댓글을 입력해 주세요'>";
+        html += "<button type='button' onclick='replyPost(" + commentId + ")' class='btn btn-default btn-lg btn3d right' id='cBtn'>답글작성</button>";
+        html += "</div>";
+
+        $("#cm"+commentId).after(html);
+    }
+
+    const replyPost = function(commentId) {
+        let commentContent = document.getElementById("reply"+ commentId).value;
+
+        $.ajax({
+            url : commentUrl+"/reply",
+            type : 'post',
+            contentType: "application/json",
+            data: JSON.stringify({
+                "parentId" : commentId,
+                "content" : commentContent
+            }),
+            success : function () {
+                console.log("답글 저장 성공");
+                commentLoad(boardId);
+            },
+            error:function () {
+                alert('답글 저장 에러');
             }
         });
     }
