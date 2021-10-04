@@ -29,13 +29,12 @@ public class BoardController {
     @GetMapping
     public String showBoard(Model model) {
         model.addAttribute("boards", boardService.findBoards());
-
         return "board";
     }
 
     @GetMapping("/post")
     public String showPost(@ModelAttribute BoardForm boardForm) {
-        return "post";
+        return "doPost";
     }
 
     @PostMapping("/post")
@@ -43,8 +42,8 @@ public class BoardController {
                          BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            log.info("bindingResult : {]", bindingResult.getFieldError());
-            return "post";
+            log.info("bindingResult : {}", bindingResult.getFieldError());
+            return "doPost";
         }
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
@@ -53,14 +52,43 @@ public class BoardController {
         return "redirect:/main/board";
     }
 
+    @GetMapping("/{postId}/update")
+    public String showUpdatePosting(@PathVariable Long postId, Model model) {
+        Board board = boardService.findBoard(postId);
+        BoardForm boardForm = new BoardForm(board.getTitle(), board.getWriter(), board.getContent());
+        model.addAttribute("postId", postId);
+        model.addAttribute("boardForm", boardForm);
+        return "updatePost";
+    }
+
+    @PostMapping("/{postId}/update")
+    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute BoardForm boardForm,
+                             BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            log.info("bindingResult : {}", bindingResult.getFieldError());
+            model.addAttribute("postId", postId);
+            return "updatePost";
+        }
+
+        Board board = new Board(boardForm.getTitle(), boardForm.getWriter(), boardForm.getContent(), LocalDateTime.now());
+        boardService.update(postId, board);
+        return "redirect:/main/board";
+    }
+
+    @GetMapping("/{postId}/delete")
+    public String doUpdating(@PathVariable Long postId) {
+        boardService.delete(postId);
+        return "redirect:/main/board";
+    }
+
     @GetMapping("/{postId}")
     public String showPosting(@Login LoginForm loginForm, @PathVariable Long postId, Model model) {
-        log.info("loging");
         Board board = boardService.findBoard(postId);
         model.addAttribute("board", board);
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
         model.addAttribute("student", student.get());
-        return "posting";
+        return "post";
     }
 }

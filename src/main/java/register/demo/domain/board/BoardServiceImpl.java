@@ -15,6 +15,15 @@ public class BoardServiceImpl implements BoardService{
         boardRepository.savePost(board);
     }
 
+    public void update(Long postId, Board board) {
+        boardRepository.updatePost(postId, board);
+    }
+
+    public void delete(Long boardId) {
+        boardRepository.deletePost(boardId);
+
+    }
+
     public Board findBoard(Long id) {
         return boardRepository.findById(id);
     }
@@ -22,4 +31,6 @@ public class BoardServiceImpl implements BoardService{
     public List<Board> findBoards() {
         return boardRepository.findAllPost();
     }
+
+
 }

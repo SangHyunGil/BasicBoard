@@ -21,7 +21,7 @@ public class TestData {
         Student student = new Student("qwe@naver.com", "qwe", "qwe", "qwe", "qwe", "qwe");
         studentRepository.save(student);
 
-        Board board = new Board("Test", "상현", "test", LocalDateTime.now());
+        Board board = new Board("게시글1", "상현", "테스트", LocalDateTime.now());
         //board.getComments().add(new Comment("qwe", "qwe", LocalDateTime.now()));
         boardRepository.savePost(board);
     }

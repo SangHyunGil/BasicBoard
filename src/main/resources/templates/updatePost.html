@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+<article>
+
+    <div class="container" role="main">
+        <h2>글 수정하기</h2>
+        <form class="form-group" th:method="post" th:action="@{/main/board/{boardId}/update(boardId = ${postId})}" th:object="${boardForm}">
+            <div class="mb-3">
+                <label for="title">제목</label>
+                <textarea type="text" class="form-control" name="title" id="title" th:field="*{title}" th:text="*{title}"></textarea>
+                <label class="err" th:errors="*{title}"></label>
+            </div>
+            <div class="mb-3">
+                <label for="title">작성자</label>
+                <textarea type="text" class="form-control" name="writer" id="writer" readonly="readonly" th:text="*{writer}"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="content">내용</label>
+                <textarea class="form-control" rows="10" name="content" id="content" th:field="*{content}" th:text="*{content}"></textarea>
+                <label class="err" th:errors="*{content}"></label>
+            </div>
+            <div >
+                <button type="submit" class="btn btn-default btn-lg btn3d" id="btnSave">저장</button>
+                <button type="button" th:onclick="|location.href='@{/main/board}'|" class="btn btn-default btn-lg btn3d right" id="btnList">목록</button>
+            </div>
+        </form>
+
+    </div>
+</article>
+</body>
+</html>
