@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+    <link rel="stylesheet" href="css/table.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
     <title>Title</title>
-    <link rel="stylesheet" th:href="@{css/style.css}">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 </head>
 <body id="LoginForm">
-<div class="container">
-    <br>
-    <h1 class="text-center">학생 게시판</h1>
+<div class="container h-100">
+    <div class="row">
+       <div class="col-12 d-flex justify-content-center">
+           <h1 class="text-center">학생 게시판</h1>
+       </div>
+    </div>
     <br>
 
     <table class="table table-hover table-striped text-center" style="border: 1px solid">
@@ -32,8 +37,43 @@
              </tr>
         </tbody>
     </table>
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="page-content page-container" id="page-content">
+                <div class="padding">
+                    <div class="table-responsive">
+                        <table class="table table-theme table-row v-middle">
+                            <thead>
+                                <tr class="d-flex">
+                                    <th class="page-num" style="color:black; width:60px;">번호</th>
+                                    <th class="page-name" style="width:50px">제목</th>
+                                    <th class="page-writer" style="width:110px">글쓴이</th>
+                                    <th class="page-date" style="width:30px">작성시간</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="v-middle d-flex mb-3" th:each="board : ${boards}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
+                                    <td class="page-num text-center" th:field="${board.id}" th:text="${board.id}"></td>
+                                    <td class="page-name text-center" th:field="${board.title}" th:text="${board.title}"></td>
+                                    <td class="page-writer text-center" th:field="${board.content}" th:text="${board.writer}"></td>
+                                    <td class="page-date text-center" th:field="${board.writeTime}" th:text="${{board.writeTime}}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/board/post}'|">글쓰기</button>
+            <button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main}'|">메인으로</button>
+        </div>
+    </div>
 </div>
-<button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/board/post}'|">글쓰기</button>
-<button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main}'|">메인으로</button>
+
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 </body>
 </html>
