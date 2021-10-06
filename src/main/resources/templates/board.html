@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" th:href="@{/css/BoardStyle.css}">
+    <link rel="stylesheet" href="css/BoardStyle.css">
     <link rel="stylesheet" th:href="@{/css/table.css}">
     <link rel="stylesheet" href="css/table.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -18,25 +18,6 @@
        </div>
     </div>
     <br>
-
-    <table class="table table-hover table-striped text-center" style="border: 1px solid">
-        <thead>
-            <tr>
-                <th class="text-center">번호</th>
-                <th class="text-center">제목</th>
-                <th class="text-center">글쓴이</th>
-                <th class="text-center">작성시간</th>
-            </tr>
-        </thead>
-            <tbody>
-             <tr th:each="board : ${boards}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
-                    <td th:field="${board.id}" th:text="${board.id}"></td>
-                    <td th:field="${board.title}" th:text="${board.title}"></td>
-                    <td th:field="${board.content}" th:text="${board.writer}"></td>
-                    <td th:field="${board.writeTime}" th:text="${{board.writeTime}}"></td>
-             </tr>
-        </tbody>
-    </table>
     <div class="row mt-5">
         <div class="col-12">
             <div class="page-content page-container" id="page-content">

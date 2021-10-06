@@ -1,18 +1,6 @@
-/*
 body#LoginForm{
-    background-image:url("https://hdwallsource.com/img/2014/9/blur-26347-27038-hd-wallpapers.jpg");
-    background-repeat:no-repeat;
-    background-position:center;
-    background-size:cover;
     padding:10px;
-}*/
-
-body#LoginForm{
-    background-image:url("../image/LoginBackground.png");
-    background-repeat:no-repeat;
-    background-position:center;
-    background-size:cover;
-    padding:10px;
+    background-color: #E1DCD9;
 }
 
 .form-heading { color:#fff; font-size:23px;}
@@ -26,37 +14,12 @@ body#LoginForm{
     height: 50px;
     line-height: 50px;
 }
-
-.img-div {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5),
-                          rgba(0, 0, 0, 0.5)),url('https://cdn.pixabay.com/photo/2014/12/16/22/25/sunset-570881_960_720.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    object-fit: cover;
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.img-div > div {
-    margin-right: 10%;
-    color: white;
-    font-family: 'Birthstone', cursive;
-    font-weight: bold;
-    font-size: 10rem;
-}
-.img-div > div > p {
-    margin: 0 !important;
-}
-
 .main-div {
     background: #ffffff none repeat scroll 0 0;
     border-radius: 2px;
     margin: 10px auto 30px;
     max-width: 38%;
-    /*padding: 50px 70px 70px 71px;*/
-    padding: 5%;
+    padding: 50px 70px 70px 71px;
 }
 
 .login-form .form-group {

@@ -2,6 +2,10 @@ body {
     background-color: #f9f9fa
 }
 
+thead, tbody {
+    font-size: 2rem !important;
+}
+
 .padding {
     padding: 20px
 }
