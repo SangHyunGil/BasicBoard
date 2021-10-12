@@ -16,6 +16,7 @@
             <form method="post" th:action="@{/main/logout}">
                 <button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/student}'|">가입학생</button>
                 <button type="button" class="btn btn-default btn-lg btn3d" th:onclick="|location.href='@{/main/board}'|">게시판</button>
+                <button type="button" class="btn btn-default btn-lg btn3d" onclick="location.href='./newBoard.html'">NEW!게시판</button>
                 <button type="button submit" class="btn btn-default btn-lg btn3d">로그아웃</button>
             </form>
         </ul>
