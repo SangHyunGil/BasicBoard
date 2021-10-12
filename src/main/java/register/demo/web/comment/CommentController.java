@@ -34,7 +34,7 @@ public class CommentController {
     public String addComment(@RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
         log.info("addComment : {}, {}", commentAddForm.getBoardId(), commentAddForm.getContent());
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        commentService.addComment(commentAddForm.getBoardId(), new Comment(student.get().getNickname(), commentAddForm.getContent(), LocalDateTime.now()));
+        commentService.addComment(commentAddForm.getBoardId(), new Comment(student.get(), commentAddForm.getContent(), LocalDateTime.now(), false));
         return "true";
     }
 
@@ -42,7 +42,7 @@ public class CommentController {
     public String replyComment(@RequestBody CommentReplyForm commentReplyForm, @Login LoginForm loginForm) {
         log.info("replyComment : {}, {}", commentReplyForm.getParentId(), commentReplyForm.getContent());
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        commentService.replyComment(commentReplyForm.getParentId(), new Comment(student.get().getNickname(), commentReplyForm.getContent(), LocalDateTime.now()));
+        commentService.replyComment(commentReplyForm.getParentId(), new Comment(student.get(), commentReplyForm.getContent(), LocalDateTime.now(), false));
         return "true";
     }
 

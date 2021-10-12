@@ -2,27 +2,29 @@ package register.demo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.board.Board;
-import register.demo.domain.board.BoardMemoryRepository;
+import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
-import register.demo.domain.student.StudentMemoryRepository;
+import register.demo.domain.student.StudentService;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class TestData {
-    private final StudentMemoryRepository studentRepository;
-    private final BoardMemoryRepository boardRepository;
+    private final StudentService studentService;
+    private final BoardService boardService;
 
     @PostConstruct
     public void init() {
         Student student = new Student("qwe@naver.com", "qwe", "qwe", "qwe", "qwe", "qwe");
-        studentRepository.save(student);
+        studentService.join(student);
 
-        Board board = new Board("게시글1", "상현", "테스트", LocalDateTime.now());
+        Board board = new Board("게시글1", student, "테스트", LocalDateTime.now(), false);
         //board.getComments().add(new Comment("qwe", "qwe", LocalDateTime.now()));
-        boardRepository.savePost(board);
+        boardService.post(board);
     }
 }

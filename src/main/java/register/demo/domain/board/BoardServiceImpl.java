@@ -2,11 +2,14 @@ package register.demo.domain.board;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import register.demo.web.board.BoardForm;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
@@ -15,8 +18,8 @@ public class BoardServiceImpl implements BoardService{
         boardRepository.savePost(board);
     }
 
-    public void update(Long postId, Board board) {
-        boardRepository.updatePost(postId, board);
+    public void update(Long postId, BoardForm boardForm) {
+        boardRepository.updatePost(postId, boardForm);
     }
 
     public void delete(Long boardId) {

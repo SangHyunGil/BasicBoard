@@ -47,7 +47,7 @@ public class BoardController {
         }
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        Board board = new Board(boardForm.getTitle(), student.get().getNickname(), boardForm.getContent(), LocalDateTime.now());
+        Board board = new Board(boardForm.getTitle(), student.get(), boardForm.getContent(), LocalDateTime.now(), false);
         boardService.post(board);
         return "redirect:/main/board";
     }
@@ -55,7 +55,7 @@ public class BoardController {
     @GetMapping("/{postId}/update")
     public String showUpdatePosting(@PathVariable Long postId, Model model) {
         Board board = boardService.findBoard(postId);
-        BoardForm boardForm = new BoardForm(board.getTitle(), board.getWriter(), board.getContent());
+        BoardForm boardForm = new BoardForm(board.getTitle(), board.getWriter().getNickname(), board.getContent());
         model.addAttribute("postId", postId);
         model.addAttribute("boardForm", boardForm);
         return "updatePost";
@@ -71,8 +71,7 @@ public class BoardController {
             return "updatePost";
         }
 
-        Board board = new Board(boardForm.getTitle(), boardForm.getWriter(), boardForm.getContent(), LocalDateTime.now());
-        boardService.update(postId, board);
+        boardService.update(postId, boardForm);
         return "redirect:/main/board";
     }
 

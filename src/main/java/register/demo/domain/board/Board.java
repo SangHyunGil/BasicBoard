@@ -1,31 +1,46 @@
 package register.demo.domain.board;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-import register.demo.domain.comments.Comment;
+import register.demo.domain.student.Student;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@Entity
 @Getter
 @Setter
+@SequenceGenerator(
+        name="BOARD_SEQ_GENERATOR",
+        sequenceName = "BOARD_SEQ"
+)
 public class Board {
-
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOARD_SEQ_GENERATOR")
+    @Column(name = "board_id")
     private Long id;
-    private String title;
-    private String writer;
-    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student writer;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime writeTime;
-    private List<Comment> comments = new ArrayList<>();
+    private Boolean isDelete;
+    private String title;
+    private String content;
 
-    public Board(String title, String writer, String content, LocalDateTime writeTime) {
+    protected Board() {
+    }
+
+    public Board(String title, Student writer, String content, LocalDateTime writeTime, Boolean isDelete) {
         this.title = title;
         this.writer = writer;
         this.content = content;
         this.writeTime = writeTime;
+        this.isDelete = isDelete;
     }
+
+
 }

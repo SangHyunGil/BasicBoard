@@ -36,7 +36,7 @@
                                 <tr class="v-middle d-flex mb-3" th:each="board : ${boards}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
                                     <td class="page-num text-center" th:field="${board.id}" th:text="${board.id}"></td>
                                     <td class="page-name text-center" th:field="${board.title}" th:text="${board.title}"></td>
-                                    <td class="page-writer text-center" th:field="${board.content}" th:text="${board.writer}"></td>
+                                    <td class="page-writer text-center" th:field="${board.writer}" th:text="${board.writer.nickname}"></td>
                                     <td class="page-date text-center" th:field="${board.writeTime}" th:text="${{board.writeTime}}"></td>
                                 </tr>
                             </tbody>

@@ -21,7 +21,7 @@
             <hr>
             <div class="mb-3">
                 <label for="title">작성자</label>
-                <textarea type="text" class="form-control" name="writer" id="writer" readonly="readonly" th:text="*{writer}"></textarea>
+                <textarea type="text" class="form-control" name="writer" id="writer" readonly="readonly" th:text="*{writer.nickname}"></textarea>
             </div>
             <hr>
             <div class="mb-3">
@@ -45,8 +45,8 @@
         <hr>
         <div >
             <button type="btn" th:onclick="|location.href='@{/main/board}'|" class="btn btn-default btn-lg btn3d right" id="btnList">목록</button>
-            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/update(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">수정</button>
-            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/delete(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">삭제</button>
+            <button type="btn" th:if="${board.writer.nickname == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/update(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">수정</button>
+            <button type="btn" th:if="${board.writer.nickname == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/delete(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">삭제</button>
         </div>
 
     </div>
@@ -71,7 +71,7 @@
                 let html = "";
                 for (const i in data) {
                     let cId = data[i].id;
-                    let cNickname = data[i].nickname;
+                    let cNickname = data[i].writer.nickname;
                     let cContent = data[i].content;
                     let cChildren = data[i].children;
                     let cwriteTime = data[i].writeTime;
@@ -87,7 +87,7 @@
                     html += "작성 시간 " + cwriteTime;
                     html += "</div>";
                     html += "<div>";
-                    if (cContent != "삭제된 메세지입니다.") {
+                    if (cContent != "삭제된 댓글입니다.") {
                         html += "<a href='javacript:void(0);' onclick='commentReply(" + cId + ")'>답글 달기</a>";
                         if (cNickname == [[ ${student.nickname }]]) {
                             html += "<div>";
@@ -100,31 +100,33 @@
                     }
                     while (cChildren.length != 0) {
                         let child = cChildren.pop();
-                        html += "<div id='cm"+ child.id + "' style='border: 1px solid black; margin-bottom: 5px'>";
-                        html += "<div>";
-                        html += "<b>" + "작성자 :" + child.nickname + "</b>";
-                        html += "</div>";
-                        html += "<div>";
-                        html += "내용 "  + child.content;
-                        html += "</div>";
-                        html += "<div>";
-                        html += "작성 시간 " + child.writeTime;
-                        html += "</div>";
-                        html += "<div>";
+                        if(!child.isDelete) {
+                            html += "<div id='cm" + child.id + "' style='border: 1px solid black; margin-bottom: 5px'>";
+                            html += "<div>";
+                            html += "<b>" + "작성자 :" + child.writer.nickname + "</b>";
+                            html += "</div>";
+                            html += "<div>";
+                            html += "내용 " + child.content;
+                            html += "</div>";
+                            html += "<div>";
+                            html += "작성 시간 " + child.writeTime;
+                            html += "</div>";
+                            html += "<div>";
 
-                        if (child.content != "삭제된 메세지입니다.") {
-                            html += "<a href='javacript:void(0);' id = 're"+child.id+"' onclick='commentReply(" + child.id + ")'>답글 달기</a>";
-                            if (child.nickname == [[ ${student.nickname }]]) {
-                                html += "<div>";
-                                html += "<a href='javacript:void(0);' onclick='commentDelete(" + child.id + ")'>댓글 삭제</a>";
-                                html += "</div>";
-                                html += "<div>";
-                                html += "<a href='javacript:void(0);' onclick='commentEdit(" + child.id + ", \"" + child.writer + "\", \"" + child.content + "\")'>댓글 수정</a>";
-                                html += "</div>";
+                            if (child.content != "삭제된 댓글입니다.") {
+                                html += "<a href='javacript:void(0);' id = 're" + child.id + "' onclick='commentReply(" + child.id + ")'>답글 달기</a>";
+                                if (child.writer.nickname == [[ ${student.nickname }]]) {
+                                    html += "<div>";
+                                    html += "<a href='javacript:void(0);' onclick='commentDelete(" + child.id + ")'>댓글 삭제</a>";
+                                    html += "</div>";
+                                    html += "<div>";
+                                    html += "<a href='javacript:void(0);' onclick='commentEdit(" + child.id + ", \"" + child.writer + "\", \"" + child.content + "\")'>댓글 수정</a>";
+                                    html += "</div>";
+                                }
                             }
-                        }
-                        while (child.children.length != 0) {
-                            cChildren.unshift(child.children.pop());
+                            while (child.children.length != 0) {
+                                cChildren.unshift(child.children.pop());
+                            }
                         }
                     }
                     html += "</div>";

@@ -4,9 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
+
+@Entity
 @ToString
 @Getter
+@SequenceGenerator(
+        name = "STUDENT_SEQ_GENERATOR",
+        sequenceName = "STUDENT_SEQ"
+)
 public class Student {
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STUDENT_SEQ_GENERATOR")
+    @Column(name = "student_id")
     private Long id;
     private String email;
     private String password;
@@ -15,7 +24,7 @@ public class Student {
     private String department;
     private String major;
 
-    public Student() {
+    protected Student() {
     }
 
     public Student(String email, String password, String name, String nickname, String department, String major) {
