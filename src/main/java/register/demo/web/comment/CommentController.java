@@ -35,7 +35,7 @@ public class CommentController {
         log.info("addComment : {}, {}", commentAddForm.getBoardId(), commentAddForm.getContent());
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
         commentService.addComment(commentAddForm.getBoardId(), new Comment(student.get(), commentAddForm.getContent(), LocalDateTime.now(), false));
-        return "true";
+        return "addComplete";
     }
 
     @PostMapping("/main/board/comment/reply")
@@ -43,20 +43,20 @@ public class CommentController {
         log.info("replyComment : {}, {}", commentReplyForm.getParentId(), commentReplyForm.getContent());
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
         commentService.replyComment(commentReplyForm.getParentId(), new Comment(student.get(), commentReplyForm.getContent(), LocalDateTime.now(), false));
-        return "true";
+        return "replyComplete";
     }
 
     @DeleteMapping("/main/board/comment")
     public String deleteComment(@RequestBody CommentDeleteForm commentDeleteForm) {
         log.info("deleteComment : {}", commentDeleteForm.getCommentId());
         commentService.deleteComment(commentDeleteForm.getBoardId(), commentDeleteForm.getCommentId());
-        return "true";
+        return "deleteComplete";
     }
 
     @PatchMapping("/main/board/comment")
     public String updateComment( @RequestBody CommentUpdateForm commentUpdateForm) {
         log.info("updateComment : {}, {}", commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
         commentService.updateComment(commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
-        return "true";
+        return "updateComplete";
     }
 }

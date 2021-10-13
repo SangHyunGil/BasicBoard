@@ -14,8 +14,8 @@ public class StudentServiceImpl implements StudentService{
 
     private final StudentRepository studentRepository;
 
-    public void join(Student student) {
-        studentRepository.save(student);
+    public Long join(Student student) {
+        return studentRepository.save(student);
     }
 
     public Student findStudent(Long id) {

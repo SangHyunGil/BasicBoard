@@ -17,8 +17,9 @@ public class StudentH2Repository implements StudentRepository{
 
     private final EntityManager em;
 
-    public void save(Student student) {
+    public Long save(Student student) {
         em.persist(student);
+        return student.getId();
     }
 
     public Student findById(Long id) {

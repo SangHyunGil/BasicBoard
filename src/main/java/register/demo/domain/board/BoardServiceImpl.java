@@ -3,6 +3,7 @@ package register.demo.domain.board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import register.demo.domain.student.Student;
 import register.demo.web.board.BoardForm;
 
 import java.util.List;
@@ -14,21 +15,30 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
 
-    public void post(Board board) {
-        boardRepository.savePost(board);
+    public Long post(Board board) {
+        return boardRepository.savePost(board);
     }
 
-    public void update(Long postId, BoardForm boardForm) {
+    public Boolean update(Long postId, BoardForm boardForm) {
         boardRepository.updatePost(postId, boardForm);
+        return true;
     }
 
-    public void delete(Long boardId) {
+    public Boolean delete(Long boardId) {
         boardRepository.deletePost(boardId);
-
+        return true;
     }
 
     public Board findBoard(Long id) {
         return boardRepository.findById(id);
+    }
+
+    public List<Board> findBoard(String title) {
+        return boardRepository.findByTitle(title);
+    }
+
+    public List<Board> findBoard(Student student) {
+        return boardRepository.findByStudent(student);
     }
 
     public List<Board> findBoards() {

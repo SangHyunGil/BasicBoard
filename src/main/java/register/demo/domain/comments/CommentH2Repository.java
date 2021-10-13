@@ -14,13 +14,14 @@ public class CommentH2Repository implements CommentRepository{
 
     private final EntityManager em;
 
-    public void saveComment(Long id, Comment comment) {
+    public Long saveComment(Long id, Comment comment) {
         Board board = em.find(Board.class, id);
         comment.setBoard(board);
         em.persist(comment);
+        return comment.getId();
     }
 
-    public void deleteComment(Long boardId, Long commentId) {
+    public Boolean deleteComment(Long boardId, Long commentId) {
         Comment comment = em.find(Comment.class, commentId);
 
         if (comment.getChildren().isEmpty()) {
@@ -28,17 +29,20 @@ public class CommentH2Repository implements CommentRepository{
         } else {
             comment.setContent("삭제된 댓글입니다.");
         }
+        return true;
     }
 
-    public void updateComment(Long commentId, String content) {
+    public Boolean updateComment(Long commentId, String content) {
         Comment comment = em.find(Comment.class, commentId);
         comment.setContent(content);
+        return true;
     }
 
-    public void replyComment(Long parentId, Comment childComment) {
+    public Boolean replyComment(Long parentId, Comment childComment) {
         Comment comment = em.find(Comment.class, parentId);
         comment.addChildComment(childComment);
         em.persist(childComment);
+        return true;
     }
 
     public List<Comment> findAllComment(Long id) {

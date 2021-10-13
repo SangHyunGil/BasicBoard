@@ -27,8 +27,9 @@ public class BoardController {
     private final StudentService studentService;
 
     @GetMapping
-    public String showBoard(Model model) {
+    public String showBoard(@Login LoginForm loginForm, Model model) {
         model.addAttribute("boards", boardService.findBoards());
+        model.addAttribute("student", studentService.findStudent(loginForm.getEmail()).get());
         return "board";
     }
 
