@@ -16,6 +16,17 @@ $(function () {
     .resize();
 
    const allVideos = document.querySelectorAll(".video");
+   const PostVideos = document.querySelectorAll(".random-video");
+   const RandVideos = [
+    'https://pixabay.com/ko/videos/download/video-66004_tiny.mp4?attachment',
+    'https://pixabay.com/ko/videos/download/video-82602_small.mp4?attachment',
+    'https://pixabay.com/ko/videos/download/video-67201_tiny.mp4?attachment'
+   ];
+   PostVideos.forEach((v) => {
+      const Newrand = Math.floor(Math.random()*RandVideos.length);
+      v.innerHTML = `<source src=${RandVideos[Newrand]} type="video/mp4">`;
+   });
+
 
    allVideos.forEach((v) => {
     v.addEventListener("mouseover", () => {
@@ -33,11 +44,11 @@ $(function () {
      $(".main-container").removeClass("show");
      $(".main-container").scrollTop(0);
     });
-    $(".trending, .video").on("click", function (e) {
+    $(".recommend, .video").on("click", function (e) {
      $(".main-container").addClass("show");
      $(".main-container").scrollTop(0);
      $(".sidebar-link").removeClass("is-active");
-     $(".trending").addClass("is-active");
+     $(".recommend").addClass("is-active");
     });
 
     $(".video").click(function () {
