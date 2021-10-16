@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.board.Board;
 import register.demo.domain.student.Student;
-import register.demo.web.comment.CommentUpdateForm;
+import register.demo.web.comment.form.CommentUpdateForm;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

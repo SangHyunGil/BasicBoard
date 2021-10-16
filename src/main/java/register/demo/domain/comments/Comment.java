@@ -1,6 +1,5 @@
 package register.demo.domain.comments;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import register.demo.domain.board.Board;
@@ -27,12 +26,10 @@ public class Comment {
     @JoinColumn(name = "writer_id")
     private Student writer;
 
-
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
@@ -40,7 +37,7 @@ public class Comment {
     @OneToMany(mappedBy = "parent")
     private List<Comment> children = new ArrayList<>();
 
-    private String Content;
+    private String content;
     private LocalDateTime writeTime;
     private Boolean isDelete = false;
 
@@ -49,7 +46,7 @@ public class Comment {
 
     public Comment(Student writer, String content, LocalDateTime writeTime, Boolean isDelete) {
         this.writer = writer;
-        this.Content = content;
+        this.content = content;
         this.writeTime = writeTime;
         this.isDelete = isDelete;
     }
