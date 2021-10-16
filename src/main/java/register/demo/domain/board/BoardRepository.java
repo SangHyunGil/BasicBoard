@@ -1,23 +1,18 @@
 package register.demo.domain.board;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import register.demo.domain.student.Student;
 import register.demo.web.board.BoardForm;
 
 import java.util.List;
 
-public interface BoardRepository {
+public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    Long savePost(Board board);
+    @Query("select b from Board b where b.title like concat('%', :title, '%')")
+    List<Board> findByTitle(@Param("title") String title);
 
-    Boolean updatePost(Long postId, BoardForm boardForm);
+    List<Board> findByWriter(Student student);
 
-    Boolean deletePost(Long boardId);
-
-    Board findById(Long id);
-
-    List<Board> findByTitle(String title);
-
-    List<Board> findByStudent(Student student);
-
-    List<Board> findAllPost();
 }

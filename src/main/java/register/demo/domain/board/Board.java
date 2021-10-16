@@ -1,6 +1,5 @@
 package register.demo.domain.board;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +26,7 @@ public class Board {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime writeTime;
-    private Boolean isDelete;
+    private Boolean isDeleted;
     private String title;
     private String content;
 
@@ -39,7 +38,7 @@ public class Board {
         this.writer = writer;
         this.content = content;
         this.writeTime = writeTime;
-        this.isDelete = isDelete;
+        this.isDeleted = isDelete;
     }
 
 

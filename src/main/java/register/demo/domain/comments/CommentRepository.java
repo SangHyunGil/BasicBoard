@@ -1,15 +1,17 @@
 package register.demo.domain.comments;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
+import java.util.Optional;
 
-public interface CommentRepository {
-    Long saveComment(Long id, Comment comment);
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Boolean deleteComment(Long boardId, Long commentId);
+    @Query("select c from Comment c left join fetch c.board join fetch c.writer where c.board.id = :boardId")
+    List<Comment> findAllComments(@Param("boardId") Long boardId);
 
-    Boolean updateComment(Long commentId, String content);
-
-    Boolean replyComment(Long commentId, Comment comment);
-
-    List<Comment> findAllComment(Long id);
+    @Query("select c from Comment c left join fetch c.parent where c.id= :commentId")
+    Optional<Comment> findByIdWithParent(@Param("commentId") Long commentId);
 }

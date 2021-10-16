@@ -30,10 +30,10 @@ class BoardServiceImplTest {
 
         //when
         Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
-        Long postId = boardService.post(board);
+        Board post = boardService.post(board);
 
         //then
-        Board findBoard = boardService.findBoard(postId);
+        Board findBoard = boardService.findBoard(post.getId());
         assertEquals(board, findBoard);
     }
     
@@ -46,8 +46,8 @@ class BoardServiceImplTest {
         //when
         Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
 
-        Long postId = boardService.post(board);
-        Boolean isDelete = boardService.delete(postId);
+        Board post = boardService.post(board);
+        Boolean isDelete = boardService.delete(post.getId());
 
         //then
         assertEquals(true, isDelete);
@@ -63,11 +63,11 @@ class BoardServiceImplTest {
         Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
         BoardForm boardForm = new BoardForm("테스트 글 수정", student.getNickname(), "테스트 글 수정했습니다.");
 
-        Long postId = boardService.post(board);
+        Board post = boardService.post(board);
         boardService.update(board.getId(), boardForm);
 
         //then
-        assertEquals("테스트 글 수정했습니다.", boardService.findBoard(postId).getContent());
+        assertEquals("테스트 글 수정했습니다.", boardService.findBoard(post.getId()).getContent());
     }
 
     @Test
@@ -106,12 +106,10 @@ class BoardServiceImplTest {
     public void 작성자_글조회() throws Exception {
         //given
         Student student1 = new Student("testID1@gmail.com", "testPW1", "테스터1", "테스터1", "컴공", "백엔드");
-        Long student1Id = studentService.join(student1);
-        Student studentA = studentService.findStudent(student1Id);
+        Student studentA = studentService.join(student1);
 
         Student student2 = new Student("testID2@gmail.com", "testPW2", "테스터2", "테스터2", "컴공", "백엔드");
-        Long student2Id = studentService.join(student2);
-        Student studentB = studentService.findStudent(student2Id);
+        Student studentB = studentService.join(student2);
 
         //when
         Board board1 = new Board("테스트 글", studentA, "테스트 글입니다.", LocalDateTime.now(), false);
