@@ -34,21 +34,23 @@ public class Comment {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Comment> children = new ArrayList<>();
 
     private String content;
     private LocalDateTime writeTime;
-    private Boolean isDelete = false;
+    private Boolean isDeleted = false;
 
     protected Comment() {
     }
 
-    public Comment(Student writer, String content, LocalDateTime writeTime, Boolean isDelete) {
+    public Comment(Student writer, Board board, Comment parent, String content, LocalDateTime writeTime, Boolean isDelete) {
         this.writer = writer;
+        this.board = board;
+        this.parent = parent;
         this.content = content;
         this.writeTime = writeTime;
-        this.isDelete = isDelete;
+        this.isDeleted = isDelete;
     }
 
     public void addChildComment(Comment child) {

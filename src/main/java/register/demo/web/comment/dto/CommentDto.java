@@ -4,24 +4,24 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @ToString
-public class pCommentDto {
+public class CommentDto {
     private Long id;
     private String writer;
     private String content;
     private LocalDateTime writeTime;
     private Boolean isDelete;
-    private List<cCommentDto> children;
+    private List<CommentDto> children = new ArrayList<>();
 
-    public pCommentDto(Long id, String writer, String content, LocalDateTime writeTime, Boolean isDelete, List<cCommentDto> children) {
+    public CommentDto(Long id, String writer, String content, LocalDateTime writeTime, Boolean isDelete) {
         this.id = id;
         this.writer = writer;
         this.content = content;
         this.writeTime = writeTime;
         this.isDelete = isDelete;
-        this.children = children;
     }
 }

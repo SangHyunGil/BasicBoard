@@ -25,38 +25,36 @@ public class StudentServiceImplUnitTest {
     @Test
     public void 회원가입() throws Exception {
         //given
+        Long studentId = 2L;
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        Long tempId = 2L;
-        ReflectionTestUtils.setField(student, "id", tempId);
+        ReflectionTestUtils.setField(student, "id", studentId);
 
         //mocking
-        given(studentRepository.save(student)).willReturn(tempId);
-        given(studentRepository.findById(tempId)).willReturn(student);
+        given(studentRepository.save(student)).willReturn(student);
 
         //when
-        Long registerId = studentService.join(student);
-        Student findStudent = studentService.findStudent(registerId);
+        Student joinStudent = studentService.join(student);
 
         //then
-        assertEquals(student.getId(), findStudent.getId());
-        assertEquals(student.getPassword(), findStudent.getPassword());
-        assertEquals(student.getNickname(), findStudent.getNickname());
+        assertEquals(student.getId(), joinStudent.getId());
+        assertEquals(student.getPassword(), joinStudent.getPassword());
+        assertEquals(student.getNickname(), joinStudent.getNickname());
     }
 
     @Test
     public void ID_회원조회() throws Exception {
         //given
+        Long studentId = 2L;
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        Long tempId = 2L;
-        ReflectionTestUtils.setField(student, "id", tempId);
+        ReflectionTestUtils.setField(student, "id", studentId);
 
         //mocking
-        given(studentRepository.save(student)).willReturn(tempId);
-        given(studentRepository.findById(tempId)).willReturn(student);
+        given(studentRepository.save(student)).willReturn(student);
+        given(studentRepository.findById(studentId)).willReturn(Optional.ofNullable(student));
 
         //when
-        Long registerId = studentService.join(student);
-        Student findStudent = studentService.findStudent(registerId);
+        Student joinStudent = studentService.join(student);
+        Student findStudent = studentService.findStudent(joinStudent.getId());
 
         //then
         assertEquals(student, findStudent);
@@ -65,12 +63,12 @@ public class StudentServiceImplUnitTest {
     @Test
     public void EMAIL_회원조회() throws Exception {
         //given
+        Long studentId = 2L;
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        Long tempId = 2L;
-        ReflectionTestUtils.setField(student, "id", tempId);
+        ReflectionTestUtils.setField(student, "id", studentId);
 
         //mocking
-        given(studentRepository.save(student)).willReturn(tempId);
+        given(studentRepository.save(student)).willReturn(student);
         given(studentRepository.findByEmail(student.getEmail())).willReturn(Optional.ofNullable(student));
 
         //when
