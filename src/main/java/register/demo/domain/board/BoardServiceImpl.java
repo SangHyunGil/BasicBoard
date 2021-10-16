@@ -15,22 +15,25 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
 
-    public Long post(Board board) {
-        return boardRepository.savePost(board);
+    public Board post(Board board) {
+        return boardRepository.save(board);
     }
 
-    public Boolean update(Long postId, BoardForm boardForm) {
-        boardRepository.updatePost(postId, boardForm);
+    public Boolean update(Long boardId, BoardForm boardForm) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
+        board.setTitle(boardForm.getTitle());
+        board.setContent(boardForm.getContent());
         return true;
     }
 
     public Boolean delete(Long boardId) {
-        boardRepository.deletePost(boardId);
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
+        boardRepository.delete(board);
         return true;
     }
 
-    public Board findBoard(Long id) {
-        return boardRepository.findById(id);
+    public Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
     }
 
     public List<Board> findBoard(String title) {
@@ -38,11 +41,11 @@ public class BoardServiceImpl implements BoardService{
     }
 
     public List<Board> findBoard(Student student) {
-        return boardRepository.findByStudent(student);
+        return boardRepository.findByWriter(student);
     }
 
     public List<Board> findBoards() {
-        return boardRepository.findAllPost();
+        return boardRepository.findAll();
     }
 
 

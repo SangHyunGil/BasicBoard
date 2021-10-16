@@ -25,10 +25,10 @@ class StudentServiceImplTest {
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
 
         //when
-        Long id = studentService.join(student);
+        Student joinStudent = studentService.join(student);
 
         //then
-        assertEquals(student, studentRepository.findById(id));
+        assertEquals(student, joinStudent);
     }
     @Test
     public void EMAIL_회원조회() throws Exception {
@@ -46,7 +46,7 @@ class StudentServiceImplTest {
         //given
 
         //when
-        String nickname = studentRepository.findById(1L).getNickname();
+        String nickname = studentRepository.findById(1L).get().getNickname();
 
         //then
         assertEquals("qwe", nickname);

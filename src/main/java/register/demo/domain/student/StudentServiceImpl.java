@@ -14,12 +14,12 @@ public class StudentServiceImpl implements StudentService{
 
     private final StudentRepository studentRepository;
 
-    public Long join(Student student) {
+    public Student join(Student student) {
         return studentRepository.save(student);
     }
 
     public Student findStudent(Long id) {
-        return studentRepository.findById(id);
+        return studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 학생은 존재하지 않습니다."));
     }
 
     public Optional<Student> findStudent(String email) {

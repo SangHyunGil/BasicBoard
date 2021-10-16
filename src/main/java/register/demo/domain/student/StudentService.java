@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StudentService {
-    Long join(Student student);
+    Student join(Student student);
 
-    Student findStudent(Long id);
+    Student findStudent(Long studentId);
 
     Optional<Student> findStudent(String email);
 

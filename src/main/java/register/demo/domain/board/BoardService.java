@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface BoardService {
 
-    Long post(Board board);
+    Board post(Board board);
 
-    Boolean update(Long postId, BoardForm board);
+    Boolean update(Long boardId, BoardForm board);
 
     Boolean delete(Long boardId);
 
-    Board findBoard(Long id);
+    Board findBoard(Long boardId);
 
     List<Board> findBoard(String title);
 

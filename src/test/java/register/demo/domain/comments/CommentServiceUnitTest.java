@@ -7,15 +7,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.board.Board;
+import register.demo.domain.board.BoardRepository;
+import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
+import register.demo.domain.student.StudentService;
+import register.demo.web.comment.form.CommentAddForm;
 import register.demo.web.comment.form.CommentUpdateForm;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +32,10 @@ public class CommentServiceUnitTest {
 
     @Mock
     CommentRepository commentRepository;
+    @Mock
+    BoardService boardService;
+    @Mock
+    StudentService studentService;
 
     @Test
     public void 댓글달기() throws Exception {
@@ -39,15 +49,15 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
-        Comment comment = new Comment(student, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        CommentAddForm commentAddForm = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
+        Comment comment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
-        given(commentRepository.saveComment(boardId, comment)).willReturn(commentId);
-        given(commentRepository.findAllComment(boardId)).willReturn(new ArrayList<>(Arrays.asList(comment)));
+        given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         //when
-        commentService.addComment(board.getId(), comment);
-        Comment findComment = commentService.findComments(boardId).get(0);
+        Comment findComment = commentService.addComment(commentAddForm);
 
         //then
         assertEquals(comment, findComment);
@@ -65,19 +75,19 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId1 = 1L;
-        Comment comment1 = new Comment(student, "테스트1 댓글입니다.", LocalDateTime.now(), false);
-        Long commentId2 = 2L;
-        Comment comment2 = new Comment(student, "테스트2 댓글입니다.", LocalDateTime.now(), false);
+        CommentAddForm commentAddForm1 = new CommentAddForm(boardId, StudentId, null, "테스트1 댓글입니다.");
+        Comment comment1 = new Comment(student, board, null, "테스트1 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(comment1, "id",commentId1);
 
+        Long commentId2 = 2L;
+        CommentAddForm commentAddForm2 = new CommentAddForm(boardId, StudentId, null, "테스트2 댓글입니다.");
+        Comment comment2 = new Comment(student, board, null, "테스트2 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(comment2, "id",commentId2);
 
         //mocking
-        given(commentRepository.saveComment(boardId, comment1)).willReturn(commentId1);
-        given(commentRepository.saveComment(boardId, comment2)).willReturn(commentId2);
-        given(commentRepository.findAllComment(boardId)).willReturn(new ArrayList<>(Arrays.asList(comment1, comment2)));
+        given(commentRepository.findAllComments(boardId)).willReturn(new ArrayList<>(Arrays.asList(comment1, comment2)));
 
         //when
-        commentService.addComment(board.getId(), comment1);
-        commentService.addComment(board.getId(), comment2);
         List<Comment> findComments = commentService.findComments(boardId);
 
         //then
@@ -96,15 +106,17 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
-        Comment comment = new Comment(student, "테스트 댓글입니다.", LocalDateTime.now(), false);
-        CommentUpdateForm commentUpdateForm = new CommentUpdateForm(commentId, "테스트 댓글 수정입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
+        Comment comment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
-        given(commentRepository.saveComment(boardId, comment)).willReturn(commentId);
-        given(commentRepository.updateComment(commentId, commentUpdateForm.getContent())).willReturn(true);
+        given(commentRepository.save(any(Comment.class))).willReturn(comment);
+        given(commentRepository.findById(commentId)).willReturn(Optional.ofNullable(comment));
+
 
         //when
-        commentService.addComment(board.getId(), comment);
+        commentService.addComment(commentAddForm);
         Boolean isUpdate = commentService.updateComment(commentId, "테스트 댓글 수정입니다.");
 
         //then
@@ -123,15 +135,17 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
-        Comment comment = new Comment(student, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        CommentAddForm commentAddForm = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
+        Comment comment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
-        given(commentRepository.saveComment(boardId, comment)).willReturn(commentId);
-        given(commentRepository.deleteComment(boardId, commentId)).willReturn(true);
+        given(commentRepository.save(any(Comment.class))).willReturn(comment);
+        given(commentRepository.findById(commentId)).willReturn(Optional.ofNullable(comment));
 
         //when
-        commentService.addComment(board.getId(), comment);
-        Boolean isDelete = commentService.deleteComment(boardId, commentId);
+        commentService.addComment(commentAddForm);
+        Boolean isDelete = commentService.deleteComment(commentId);
 
         //then
         assertEquals(true, isDelete);
