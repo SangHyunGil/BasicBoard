@@ -92,3 +92,17 @@ body {
     font-size: 1.2rem;
     color: white;
 }
+
+.sidebar-link {
+    margin-top: 26px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-link button {
+    background-color: transparent;
+    border: 0;
+    color: #808191;
+    font-size: 15px;
+    padding: 0;
+}
