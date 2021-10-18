@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../../css/slider.css">
     <title>Document</title>
+    <!--test-->
+    <style>
+        #progress-container {
+          margin: 20px;
+          width: 400px;
+          height: 8px;
+          position: relative;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -104,6 +113,14 @@
                     <div><img src="https://cdn.pixabay.com/photo/2021/10/04/16/42/dog-6680642_960_720.jpg" alt="1"></div>
                     <div><img src="https://cdn.pixabay.com/photo/2021/08/18/16/52/buildings-6556065_960_720.jpg" alt="2"></div>
                     <div><img src="https://cdn.pixabay.com/photo/2021/10/09/09/18/indian-palm-squirrel-6693577_960_720.jpg" alt="3"></div>
+                </div>
+            </div>
+            <div class="about-wrapper">
+                <div class="small-header anim" style="--delay: .3s">About us</div>
+                <div class="about-footer">
+                   <div id="progress-container">
+
+                   </div>
                 </div>
             </div>
             <div class="stream-area">
@@ -277,6 +294,38 @@
         autoWidth: true,
       });
     });
+</script>
+<script>
+    var bar = new ProgressBar.Line(container, {
+      strokeWidth: 4,
+      easing: 'easeInOut',
+      duration: 1400,
+      color: '#FFEA82',
+      trailColor: '#eee',
+      trailWidth: 1,
+      svgStyle: {width: '100%', height: '100%'},
+      text: {
+        style: {
+          // Text color.
+          // Default: same as stroke color (options.color)
+          color: '#999',
+          position: 'absolute',
+          right: '0',
+          top: '30px',
+          padding: 0,
+          margin: 0,
+          transform: null
+        },
+        autoStyleContainer: false
+      },
+      from: {color: '#FFEA82'},
+      to: {color: '#ED6A5A'},
+      step: (state, bar) => {
+        bar.setText(Math.round(bar.value() * 100) + ' %');
+      }
+    });
+
+    bar.animate(1.0);  // Number from 0.0 to 1.0
 </script>
 </body>
 </html>
