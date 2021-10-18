@@ -75,3 +75,20 @@ body {
     display: block;
     width: 100%;
 }
+
+.about-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.about-footer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.text-block p {
+    font-size: 1.2rem;
+    color: white;
+}

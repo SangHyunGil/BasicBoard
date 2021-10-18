@@ -107,7 +107,7 @@
             </div>
         </div>
         <div class="main-container">
-            <div class="main-header anim" style="--delay: 0s">Discover</div>
+            <div class="small-header anim" style="--delay: 0s">Discover</div>
             <div class="slide-wrapper">
                 <div class="owl-carousel">
                     <div><img src="https://cdn.pixabay.com/photo/2021/10/04/16/42/dog-6680642_960_720.jpg" alt="1"></div>
@@ -118,9 +118,10 @@
             <div class="about-wrapper">
                 <div class="small-header anim" style="--delay: .3s">About us</div>
                 <div class="about-footer">
-                   <div id="progress-container">
-
-                   </div>
+                   <div id="progress-container" style="--delay: .5s"></div>
+                    <div class="text-block" style="display: none">
+                        <p>Back, Front 학습용 Basic Board 입니다!</p>
+                    </div>
                 </div>
             </div>
             <div class="stream-area">
@@ -280,6 +281,7 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.slim.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.0/progressbar.min.js" integrity="sha512-Hivnqo7w/SRPjJY3qvD8Y1CaKbmrmqDjZKYgIFyIag/2bOye6Qk1W99wZYObixwzYoZQeKWPqZ2ifus82GE07A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function(){
       $(".owl-carousel").owlCarousel({
@@ -296,10 +298,10 @@
     });
 </script>
 <script>
-    var bar = new ProgressBar.Line(container, {
+    const bar = new ProgressBar.Line('#progress-container', {
       strokeWidth: 4,
       easing: 'easeInOut',
-      duration: 1400,
+      duration: 3000,
       color: '#FFEA82',
       trailColor: '#eee',
       trailWidth: 1,
@@ -326,6 +328,13 @@
     });
 
     bar.animate(1.0);  // Number from 0.0 to 1.0
+
+    function destroyProgress() {
+        $("#progress-container").css("display","none");
+        $(".text-block").css("display","");
+    }
+
+    window.setTimeout(destroyProgress, 3100);
 </script>
 </body>
 </html>
