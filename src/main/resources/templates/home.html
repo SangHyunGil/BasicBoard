@@ -5,22 +5,16 @@
     <title>Title</title>
     <link rel="stylesheet" th:href="@{css/homestyle.css}">
     <link rel="stylesheet" href="css/homestyle.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet">
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
 </head>
 <body id="LoginForm">
-    <div class="container" style="flex:1;">
-        <div class="row">
-            <div class="col-12 main-text">
-                <p class="m-0 text-end">Welcome</p>
-                <p>to BasicBoard!</p>
-            </div>
-        </div>
-    </div>
+    <!--
     <div class="container" style="flex:1;">
         <nav>
             <ul>
@@ -30,6 +24,20 @@
             </ul>
         </nav>
     </div>
-
+    -->
+    <div class="container">
+        <header>Basic Board에 오신것을 환영합니다!</header>
+        <div class="main">
+            <label class="err" th:if="${param.register}">회원가입이 성공적으로 완료되었습니다.</label>
+            <div class="sign-up">
+                <i class="fas fa-user-plus fa-9x" th:onclick="|location.href='@{/register}'|"></i>
+                <button type="button" class="btn btn-lg" th:onclick="|location.href='@{/register}'|">회원가입</button>
+            </div>
+            <div class="sign-in">
+                <i class="fas fa-sign-in-alt fa-9x" th:onclick="|location.href='@{/login}'|"></i>
+                <button type="button" class="btn btn-lg" th:onclick="|location.href='@{/login}'|">로그인</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
