@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.student.Student;
 import register.demo.web.board.BoardForm;
@@ -34,7 +35,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
@@ -55,7 +56,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
         BoardForm boardForm = new BoardForm("테스트 글 수정", student.getNickname(), "테스트 글 수정했습니다.");
 
@@ -79,7 +80,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
@@ -102,7 +103,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
@@ -125,7 +126,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
@@ -148,7 +149,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
@@ -171,25 +172,44 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", studentId);
 
         Long boardId1 = 2L;
-        Board board1 = new Board("테스트 글1", student, "테스트1 글입니다.", LocalDateTime.now(), false);
+        Board board1 = new Board("테스트 글1", student, "테스트1 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board1, "id", boardId1);
 
         Long boardId2 = 3L;
-        Board board2 = new Board("테스트 글2", student, "테스트2 글입니다.", LocalDateTime.now(), false);
+        Board board2 = new Board("테스트 글2", student, "테스트2 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board2, "id", boardId2);
 
         //mocking
         given(boardRepository.save(board1)).willReturn(board1);
         given(boardRepository.save(board2)).willReturn(board2);
-        given(boardRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(board1, board2)));
+        given(boardRepository.findAll(Sort.by(Sort.Direction.DESC, "writeTime"))).willReturn(new ArrayList<>(Arrays.asList(board1, board2)));
 
         //when
         boardService.post(board1);
         boardService.post(board2);
-        List<Board> findBoards = boardService.findBoards();
+        List<Board> findBoards = boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime"));
 
         //then
         assertEquals(2, findBoards.size());
+    }
 
+    @Test
+    public void 조회수() throws Exception {
+        //given
+        Long studentId = 2L;
+        Student student = new Student("testID@gmail.com", "testPW", "test", "test", "컴공", "백엔드");
+        ReflectionTestUtils.setField(student, "id", studentId);
+
+        Long boardId = 2L;
+        Board board = new Board("test", student, "test", LocalDateTime.now(), false, 0);
+        ReflectionTestUtils.setField(board, "id", boardId);
+
+        given(boardRepository.findById(boardId)).willReturn(Optional.ofNullable(board));
+
+        //when
+        Boolean updateResult = boardService.updateHit(boardId);
+
+        //then
+        assertEquals(true, updateResult);
     }
 }

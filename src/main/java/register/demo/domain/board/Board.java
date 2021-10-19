@@ -29,16 +29,18 @@ public class Board {
     private Boolean isDeleted;
     private String title;
     private String content;
+    private Integer hit;
 
     protected Board() {
     }
 
-    public Board(String title, Student writer, String content, LocalDateTime writeTime, Boolean isDelete) {
+    public Board(String title, Student writer, String content, LocalDateTime writeTime, Boolean isDelete, Integer hit) {
         this.title = title;
         this.writer = writer;
         this.content = content;
         this.writeTime = writeTime;
         this.isDeleted = isDelete;
+        this.hit = hit;
     }
 
 

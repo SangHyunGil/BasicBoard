@@ -32,7 +32,7 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         Board post = boardService.post(board);
 
         CommentAddForm commentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
@@ -51,7 +51,7 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         Board post = boardService.post(board);
 
         CommentAddForm commentAddForm1 = new CommentAddForm(post.getId(), joinStudent.getId(), null, "첫 번째 테스트 댓글입니다.");
@@ -75,7 +75,7 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         Board post = boardService.post(board);
 
         CommentAddForm commentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
@@ -94,7 +94,7 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         Board post = boardService.post(board);
 
         CommentAddForm commentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
@@ -107,5 +107,25 @@ class CommentServiceImplTest {
 
         //then
         assertEquals(true, isDelete);
+    }
+
+    @Test
+    public void 답글달기() throws Exception {
+        //given
+        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student joinStudent = studentService.join(student);
+
+        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board post = boardService.post(board);
+
+        CommentAddForm commentAddForm1 = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        Comment parentComment = commentService.addComment(commentAddForm1);
+
+        //when
+        CommentAddForm commentAddForm2 = new CommentAddForm(post.getId(), joinStudent.getId(), parentComment.getId(), "테스트 댓글입니다.");
+        Comment childComment = commentService.addComment(commentAddForm2);
+
+        //then
+        assertEquals(parentComment, childComment.getParent());
     }
 }
