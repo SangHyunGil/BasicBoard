@@ -80,9 +80,11 @@
     </div>
     <div class="wrapper">
         <div class="header">
-            <div class="search-bar">
-                <input type="text" placeholder="Search">
-            </div>
+            <form class="form-group" th:method="get" th:action>
+                <div class="search-bar">
+                    <input class="form-control" type="text" placeholder="제목으로 검색하기" id="keyword" name="keyword" th:value="${keyword}">
+                </div>
+            </form>
             <div class="user-settings">
                 <img class="user-img" src="https://images.unsplash.com/photo-1587918842454-870dbd18261a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=943&q=80" alt="">
                 <div class="user-name" th:text="${student.nickname}">Thomas</div>
@@ -101,7 +103,7 @@
             <div class="main-header anim" style="--delay: 0s">Discover</div>
             <div class="main-blogs">
                 <div class="main-blog anim" style="--delay: .1s">
-                    <div class="main-blog__title">How to do Basic Jumping and how to landing safely</div>
+                    <div class="main-blog__title">a</div>
                     <div class="main-blog__author">
                         <div class="author-img__wrapper">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
@@ -151,6 +153,7 @@
                     <div class="video-by" th:field="${board.writer}" th:text="${board.writer.nickname}"></div>
                     <div class="video-name" th:field="${board.title}" th:text="${board.title}"></div>
                     <div class="video-view" th:field="${board.writeTime}" th:text="${{board.writeTime}}"></div>
+                    <div class="video-view" th:field="${board.hit}" th:text="|조회수 : ${board.hit}|"></div>
                 </div>
             </div>
             <div class="stream-area">
@@ -309,7 +312,12 @@
     </div>
 </div>
 <script>
-
+    function press(f) {
+        let formname = document.getElementsByClassName("search-bar");
+        if(f.keyCode==13) {
+            formname.submit();
+        }
+    }
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.slim.js"></script>
 <script th:src="@{js/newBoard.js}"></script>

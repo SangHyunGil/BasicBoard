@@ -1,5 +1,6 @@
 package register.demo.domain.board;
 
+import org.springframework.data.domain.Sort;
 import register.demo.domain.student.Student;
 import register.demo.web.board.BoardForm;
 
@@ -7,17 +8,20 @@ import java.util.List;
 
 public interface BoardService {
 
-    Long post(Board board);
+    Board post(Board board);
 
-    Boolean update(Long postId, BoardForm board);
+    Boolean update(Long boardId, BoardForm board);
 
     Boolean delete(Long boardId);
 
-    Board findBoard(Long id);
+    Boolean updateHit(Long boardId);
+
+    Board findBoard(Long boardId);
 
     List<Board> findBoard(String title);
 
     List<Board> findBoard(Student student);
 
-    List<Board> findBoards();
+    List<Board> findBoards(Sort sort);
+
 }

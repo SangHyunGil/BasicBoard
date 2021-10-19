@@ -71,20 +71,21 @@
                 let html = "";
                 for (const i in data) {
                     let cId = data[i].id;
-                    let cNickname = data[i].writer.nickname;
+                    let cNickname = data[i].writer;
                     let cContent = data[i].content;
                     let cChildren = data[i].children;
                     let cwriteTime = data[i].writeTime;
+                    let cIsDelete = data[i].isDelete;
 
-                    html += "<div id='cm"+ cId + "' style='border: 1px solid black; margin-bottom: 5px'>";
+                    html += "<div id='cm" + cId + "' style='border: 1px solid black; margin-bottom: 5px'>";
                     html += "<div>";
-                    html += "<b>" + "작성자 :" + cNickname + "</b>";
+                    html += "<b>" + "작성자 : " + cNickname + "</b>";
                     html += "</div>";
                     html += "<div>";
-                    html += "내용 "  + cContent;
+                    html += "내용 : " + cContent;
                     html += "</div>";
                     html += "<div>";
-                    html += "작성 시간 " + cwriteTime;
+                    html += "작성 시간 : " + cwriteTime;
                     html += "</div>";
                     html += "<div>";
                     if (cContent != "삭제된 댓글입니다.") {
@@ -100,22 +101,20 @@
                     }
                     while (cChildren.length != 0) {
                         let child = cChildren.pop();
-                        if(!child.isDelete) {
                             html += "<div id='cm" + child.id + "' style='border: 1px solid black; margin-bottom: 5px'>";
                             html += "<div>";
-                            html += "<b>" + "작성자 :" + child.writer.nickname + "</b>";
+                            html += "<b>" + "작성자 : " + child.writer + "</b>";
                             html += "</div>";
                             html += "<div>";
-                            html += "내용 " + child.content;
+                            html += "내용 : " + child.content;
                             html += "</div>";
                             html += "<div>";
-                            html += "작성 시간 " + child.writeTime;
+                            html += "작성 시간 : " + child.writeTime;
                             html += "</div>";
                             html += "<div>";
 
                             if (child.content != "삭제된 댓글입니다.") {
-                                html += "<a href='javacript:void(0);' id = 're" + child.id + "' onclick='commentReply(" + child.id + ")'>답글 달기</a>";
-                                if (child.writer.nickname == [[ ${student.nickname }]]) {
+                                if (child.writer == [[ ${student.nickname }]]) {
                                     html += "<div>";
                                     html += "<a href='javacript:void(0);' onclick='commentDelete(" + child.id + ")'>댓글 삭제</a>";
                                     html += "</div>";
@@ -124,16 +123,14 @@
                                     html += "</div>";
                                 }
                             }
-                            while (child.children.length != 0) {
-                                cChildren.unshift(child.children.pop());
-                            }
-                        }
                     }
                     html += "</div>";
                     html += "</div>";
                     html += "</div>";
                     html += "</div>";
                     html += "</div>";
+                    html += "</div>";
+
                 };
                 $(".reply_list"+no).html(html);
             },
@@ -254,10 +251,11 @@
         let commentContent = document.getElementById("reply"+ commentId).value;
 
         $.ajax({
-            url : commentUrl+"/reply",
+            url : commentUrl,
             type : 'post',
             contentType: "application/json",
             data: JSON.stringify({
+                "boardId" : boardId,
                 "parentId" : commentId,
                 "content" : commentContent
             }),

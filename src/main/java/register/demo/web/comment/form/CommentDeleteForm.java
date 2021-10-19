@@ -1,9 +1,10 @@
-package register.demo.web.comment;
+package register.demo.web.comment.form;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class CommentDeleteForm {
     private Long boardId;

@@ -23,7 +23,7 @@ public class TestData {
         Student student = new Student("qwe@naver.com", "qwe", "qwe", "qwe", "qwe", "qwe");
         studentService.join(student);
 
-        Board board = new Board("게시글1", student, "테스트", LocalDateTime.now(), false);
+        Board board = new Board("게시글1", student, "테스트", LocalDateTime.now(), false, 0);
         //board.getComments().add(new Comment("qwe", "qwe", LocalDateTime.now()));
         boardService.post(board);
     }
