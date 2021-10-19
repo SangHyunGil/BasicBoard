@@ -1,4 +1,18 @@
 # BasicBoard
+## Class Diagram
+
+<p align = "center">
+    <img src = "https://github.com/SangHyunGil/BasicBoard/blob/master/img/diagram.png?raw=true">
+</p>
+
+- Student Class
+- Board Class
+- Comment Class
+
+
+
+## DataBase Use
+
 ### 1. H2 DataBase Download
 
 [H2 Database Engine](https://www.h2database.com/html/main.html) 
