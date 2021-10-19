@@ -191,6 +191,25 @@ public class BoardServiceUnitTest {
 
         //then
         assertEquals(2, findBoards.size());
+    }
 
+    @Test
+    public void 조회수() throws Exception {
+        //given
+        Long studentId = 2L;
+        Student student = new Student("testID@gmail.com", "testPW", "test", "test", "컴공", "백엔드");
+        ReflectionTestUtils.setField(student, "id", studentId);
+
+        Long boardId = 2L;
+        Board board = new Board("test", student, "test", LocalDateTime.now(), false, 0);
+        ReflectionTestUtils.setField(board, "id", boardId);
+
+        given(boardRepository.findById(boardId)).willReturn(Optional.ofNullable(board));
+
+        //when
+        Boolean updateResult = boardService.updateHit(boardId);
+
+        //then
+        assertEquals(true, updateResult);
     }
 }

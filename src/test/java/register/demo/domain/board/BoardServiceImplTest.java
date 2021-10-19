@@ -142,4 +142,20 @@ class BoardServiceImplTest {
         //then
         assertEquals(2, boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")).size());
     }
+
+    @Test
+    public void 조회수() throws Exception {
+        //given
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
+        studentService.join(student);
+
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board postBoard = boardService.post(board);
+
+        //when
+        boardService.updateHit(postBoard.getId());
+
+        //then
+        assertEquals(1, postBoard.getHit());
+    }
 }

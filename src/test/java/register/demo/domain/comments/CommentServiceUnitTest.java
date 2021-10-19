@@ -150,4 +150,35 @@ public class CommentServiceUnitTest {
         //then
         assertEquals(true, isDelete);
     }
+
+    @Test
+    public void 답글달기() throws Exception {
+        //given
+        Long StudentId = 2L;
+        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        ReflectionTestUtils.setField(student, "id", StudentId);
+
+        Long boardId = 2L;
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        ReflectionTestUtils.setField(board, "id", boardId);
+
+        Long commentId1 = 1L;
+        CommentAddForm commentAddForm1 = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
+        Comment parentComment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(parentComment, "id",commentId1);
+
+        Long commentId2 = 2L;
+        CommentAddForm commentAddForm2 = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
+        Comment commentComment = new Comment(student, board, parentComment, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        ReflectionTestUtils.setField(commentComment, "id",commentId2);
+
+        //mocking
+        given(commentRepository.save(any(Comment.class))).willReturn(commentComment);
+
+        //when
+        Comment replyComment = commentService.addComment(commentAddForm2);
+
+        //then
+        assertEquals(parentComment, replyComment.getParent());
+    }
 }
