@@ -1,6 +1,7 @@
 package register.demo.domain.board;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.student.Student;
@@ -32,6 +33,12 @@ public class BoardServiceImpl implements BoardService{
         return true;
     }
 
+    public Boolean updateHit(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
+        board.setHit(board.getHit()+1);
+        return true;
+    }
+
     public Board findBoard(Long boardId) {
         return boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
     }
@@ -44,8 +51,8 @@ public class BoardServiceImpl implements BoardService{
         return boardRepository.findByWriter(student);
     }
 
-    public List<Board> findBoards() {
-        return boardRepository.findAll();
+    public List<Board> findBoards(Sort sort) {
+        return boardRepository.findAll(sort);
     }
 
 

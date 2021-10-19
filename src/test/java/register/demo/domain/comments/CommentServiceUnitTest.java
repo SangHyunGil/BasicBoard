@@ -45,7 +45,7 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
@@ -71,7 +71,7 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId1 = 1L;
@@ -102,7 +102,7 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
@@ -131,7 +131,7 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false);
+        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
@@ -141,7 +141,7 @@ public class CommentServiceUnitTest {
 
         //mocking
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
-        given(commentRepository.findById(commentId)).willReturn(Optional.ofNullable(comment));
+        given(commentRepository.findByIdWithParent(commentId)).willReturn(Optional.ofNullable(comment));
 
         //when
         commentService.addComment(commentAddForm);

@@ -1,9 +1,15 @@
 package register.demo.web.board;
 
+import javassist.compiler.ast.Keyword;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +33,15 @@ public class BoardController {
     private final StudentService studentService;
 
     @GetMapping
-    public String showBoard(@Login LoginForm loginForm, Model model) {
-        model.addAttribute("boards", boardService.findBoards());
+    public String showBoard(@Login LoginForm loginForm, @RequestParam(defaultValue = "") String keyword, Model model, @PageableDefault Pageable pageable) {
+        log.info("searchForm : {}, {}, {}", keyword, pageable.getPageNumber(), pageable.getPageSize());
+        model.addAttribute("keyword", keyword);
         model.addAttribute("student", studentService.findStudent(loginForm.getEmail()).get());
+        if (StringUtils.hasText(keyword)) {
+            model.addAttribute("boards", boardService.findBoard(keyword));
+        } else {
+            model.addAttribute("boards", boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")));
+        }
         return "board";
     }
 
@@ -48,7 +60,7 @@ public class BoardController {
         }
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        Board board = new Board(boardForm.getTitle(), student.get(), boardForm.getContent(), LocalDateTime.now(), false);
+        Board board = new Board(boardForm.getTitle(), student.get(), boardForm.getContent(), LocalDateTime.now(), false, 0);
         boardService.post(board);
         return "redirect:/main/board";
     }
@@ -85,6 +97,7 @@ public class BoardController {
     @GetMapping("/{postId}")
     public String showPosting(@Login LoginForm loginForm, @PathVariable Long postId, Model model) {
         Board board = boardService.findBoard(postId);
+        boardService.updateHit(postId);
         model.addAttribute("board", board);
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());

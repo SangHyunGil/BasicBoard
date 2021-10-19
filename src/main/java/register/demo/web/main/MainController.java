@@ -41,6 +41,7 @@ public class MainController {
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
+        log.info("logout");
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
