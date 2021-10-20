@@ -20,7 +20,7 @@ public class Board {
     @Column(name = "board_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "student_id")
     private Student writer;
 
