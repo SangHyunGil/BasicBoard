@@ -8,8 +8,7 @@
 - Student Class
 - Board Class
 - Comment Class
-
-
+- Attachment Class
 
 ## DataBase Use
 

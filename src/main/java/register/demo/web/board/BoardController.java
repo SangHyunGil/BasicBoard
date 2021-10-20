@@ -1,26 +1,36 @@
 package register.demo.web.board;
 
-import javassist.compiler.ast.Keyword;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
+import register.demo.domain.file.AttachmentType;
+import register.demo.domain.file.FileStore;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
 import register.demo.web.annotation.login.Login;
+import register.demo.web.board.form.BoardAddForm;
+import register.demo.web.board.form.BoardForm;
+import register.demo.web.board.form.BoardUpdateForm;
 import register.demo.web.login.LoginForm;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Slf4j
@@ -31,6 +41,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final StudentService studentService;
+    private final FileStore fileStore;
 
     @GetMapping
     public String showBoard(@Login LoginForm loginForm, @RequestParam(defaultValue = "") String keyword, Model model, @PageableDefault Pageable pageable) {
@@ -46,13 +57,13 @@ public class BoardController {
     }
 
     @GetMapping("/post")
-    public String showPost(@ModelAttribute BoardForm boardForm) {
+    public String showPost(@ModelAttribute BoardAddForm boardAddForm) {
         return "doPost";
     }
 
     @PostMapping("/post")
-    public String doPost(@Login LoginForm loginForm, @Validated @ModelAttribute BoardForm boardForm,
-                         BindingResult bindingResult) {
+    public String doPost(@Login LoginForm loginForm, @Validated @ModelAttribute BoardAddForm boardForm,
+                         BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
             log.info("bindingResult : {}", bindingResult.getFieldError());
@@ -60,22 +71,21 @@ public class BoardController {
         }
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        Board board = new Board(boardForm.getTitle(), student.get(), boardForm.getContent(), LocalDateTime.now(), false, 0);
-        boardService.post(board);
+        boardService.post(boardForm, student.get());
         return "redirect:/main/board";
     }
 
     @GetMapping("/{postId}/update")
     public String showUpdatePosting(@PathVariable Long postId, Model model) {
         Board board = boardService.findBoard(postId);
-        BoardForm boardForm = new BoardForm(board.getTitle(), board.getWriter().getNickname(), board.getContent());
+        BoardUpdateForm boardUpdateForm = new BoardUpdateForm(board.getTitle(), board.getWriter().getNickname(), board.getContent());
         model.addAttribute("postId", postId);
-        model.addAttribute("boardForm", boardForm);
+        model.addAttribute("boardForm", boardUpdateForm);
         return "updatePost";
     }
 
     @PostMapping("/{postId}/update")
-    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute BoardForm boardForm,
+    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute BoardUpdateForm boardForm,
                              BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -97,11 +107,31 @@ public class BoardController {
     @GetMapping("/{postId}")
     public String showPosting(@Login LoginForm loginForm, @PathVariable Long postId, Model model) {
         Board board = boardService.findBoard(postId);
+        BoardForm boardForm = BoardForm.createBoardForm(board);
         boardService.updateHit(postId);
-        model.addAttribute("board", board);
+
+        model.addAttribute("board", boardForm);
 
         Optional<Student> student = studentService.findStudent(loginForm.getEmail());
         model.addAttribute("student", student.get());
         return "post";
+    }
+
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+        return new UrlResource("file:" + fileStore.createPath(filename, AttachmentType.IMAGE));
+    }
+
+    @GetMapping("/attaches/{filename}")
+    public ResponseEntity<Resource> downloadAttach(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
+        UrlResource urlResource = new UrlResource("file:" + fileStore.createPath(filename, AttachmentType.GENERAL));
+
+        String encodedUploadFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodedUploadFileName + "\"";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(urlResource);
     }
 }

@@ -1,5 +1,6 @@
 package register.demo.domain.student;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,6 +28,7 @@ public class Student {
     protected Student() {
     }
 
+    @Builder
     public Student(String email, String password, String name, String nickname, String department, String major) {
         this.email = email;
         this.password = password;

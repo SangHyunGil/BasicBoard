@@ -11,6 +11,7 @@ import register.demo.domain.board.BoardRepository;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.comment.form.CommentAddForm;
 import register.demo.web.comment.form.CommentUpdateForm;
 
@@ -41,11 +42,19 @@ public class CommentServiceUnitTest {
     public void 댓글달기() throws Exception {
         //given
         Long StudentId = 2L;
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = Student.builder()
+                .email("testID@gmail.com")
+                .password("testPW")
+                .nickname("테스터")
+                .build();
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board board = Board.builder()
+                .writer(student)
+                .title("테스트글")
+                .content("테스트글입니다.")
+                .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
@@ -67,11 +76,19 @@ public class CommentServiceUnitTest {
     public void 전체댓글조회() throws Exception {
         //given
         Long StudentId = 2L;
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = Student.builder()
+                .email("testID@gmail.com")
+                .password("testPW")
+                .nickname("테스터")
+                .build();
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board board = Board.builder()
+                .writer(student)
+                .title("테스트글")
+                .content("테스트글입니다.")
+                .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId1 = 1L;
@@ -98,11 +115,19 @@ public class CommentServiceUnitTest {
     public void 댓글수정() throws Exception {
         //given
         Long StudentId = 2L;
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = Student.builder()
+                .email("testID@gmail.com")
+                .password("testPW")
+                .nickname("테스터")
+                .build();
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board board = Board.builder()
+                .writer(student)
+                .title("테스트글")
+                .content("테스트글입니다.")
+                .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
@@ -127,11 +152,19 @@ public class CommentServiceUnitTest {
     public void 댓글삭제() throws Exception {
         //given
         Long StudentId = 2L;
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = Student.builder()
+                .email("testID@gmail.com")
+                .password("testPW")
+                .nickname("테스터")
+                .build();
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board board = Board.builder()
+                .writer(student)
+                .title("테스트글")
+                .content("테스트글입니다.")
+                .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
@@ -155,11 +188,19 @@ public class CommentServiceUnitTest {
     public void 답글달기() throws Exception {
         //given
         Long StudentId = 2L;
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = Student.builder()
+                .email("testID@gmail.com")
+                .password("testPW")
+                .nickname("테스터")
+                .build();
         ReflectionTestUtils.setField(student, "id", StudentId);
 
         Long boardId = 2L;
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        Board board = Board.builder()
+                .writer(student)
+                .title("테스트글")
+                .content("테스트글입니다.")
+                .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId1 = 1L;

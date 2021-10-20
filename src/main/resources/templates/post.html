@@ -21,12 +21,23 @@
             <hr>
             <div class="mb-3">
                 <label for="title">작성자</label>
-                <textarea type="text" class="form-control" name="writer" id="writer" readonly="readonly" th:text="*{writer.nickname}"></textarea>
+                <textarea type="text" class="form-control" name="writer" id="writer" readonly="readonly" th:text="*{writer}"></textarea>
             </div>
             <hr>
             <div class="mb-3">
                 <label for="content">내용</label>
                 <textarea class="form-control" rows="10" name="content" id="content" readonly="readonly" th:text="*{content}"></textarea>
+            </div>
+            <div >
+                <img th:each="imageFile : ${board.imageFiles}"
+                     th:if="${imageFile.attachmentType == T(register.demo.domain.file.AttachmentType).IMAGE}"
+                     th:src="@{/main/board/images/{imageFile}(imageFile=${imageFile.storeFilename})}" width="300" height="300" style="margin-right: 5px"/>
+            </div>
+            <div>
+                <a th:each="generalFile : ${board.generalFiles}"
+                   th:if="${generalFile.attachmentType == T(register.demo.domain.file.AttachmentType).GENERAL}"
+                   th:href="@{/main/board/attaches/{generalFile}(generalFile=${generalFile.storeFilename}, originName=${generalFile.originFileName})}"
+                   th:text="${generalFile.originFileName}" style="margin-right: 5px"/><br/>
             </div>
         </form>
         <hr>
@@ -45,8 +56,8 @@
         <hr>
         <div >
             <button type="btn" th:onclick="|location.href='@{/main/board}'|" class="btn btn-default btn-lg btn3d right" id="btnList">목록</button>
-            <button type="btn" th:if="${board.writer.nickname == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/update(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">수정</button>
-            <button type="btn" th:if="${board.writer.nickname == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/delete(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">삭제</button>
+            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/update(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">수정</button>
+            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/delete(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">삭제</button>
         </div>
 
     </div>

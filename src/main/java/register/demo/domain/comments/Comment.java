@@ -22,15 +22,15 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Student writer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
@@ -51,10 +51,5 @@ public class Comment {
         this.content = content;
         this.writeTime = writeTime;
         this.isDeleted = isDelete;
-    }
-
-    public void addChildComment(Comment child) {
-        this.children.add(child);
-        child.setParent(this);
     }
 }

@@ -9,6 +9,7 @@ import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.comment.form.CommentAddForm;
 
 import javax.persistence.EntityManager;
@@ -36,17 +37,17 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
-        CommentAddForm commentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
 
         //when
 
         commentService.addComment(commentAddForm);
 
         //then
-        assertEquals(1, commentService.findComments(post.getId()).size());
+        assertEquals(1, commentService.findComments(board.getId()).size());
     }
 
     @Test
@@ -55,12 +56,12 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
-        CommentAddForm commentAddForm1 = new CommentAddForm(post.getId(), joinStudent.getId(), null, "첫 번째 테스트 댓글입니다.");
-        CommentAddForm commentAddForm2 = new CommentAddForm(post.getId(), joinStudent.getId(), null, "두 번째 테스트 댓글입니다.");
-        CommentAddForm commentAddForm3 = new CommentAddForm(post.getId(), joinStudent.getId(), null, "세 번째 테스트 댓글입니다.");
+        CommentAddForm commentAddForm1 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "첫 번째 테스트 댓글입니다.");
+        CommentAddForm commentAddForm2 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "두 번째 테스트 댓글입니다.");
+        CommentAddForm commentAddForm3 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "세 번째 테스트 댓글입니다.");
 
         commentService.addComment(commentAddForm1);
         commentService.addComment(commentAddForm2);
@@ -68,7 +69,9 @@ class CommentServiceImplTest {
 
         //when
         List<Comment> comments = commentService.findComments(board.getId());
-
+        for (Comment comment : comments) {
+            System.out.println("comment.getContent() = " + comment.getContent());
+        }
         //then
         assertEquals(3, comments.size());
     }
@@ -79,17 +82,17 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
-        CommentAddForm commentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
 
         //when
         Comment comment = commentService.addComment(commentAddForm);
         commentService.updateComment(comment.getId(), "테스트 댓글 수정하였습니다.");
 
         //then
-        assertEquals("테스트 댓글 수정하였습니다.", commentService.findComments(post.getId()).get(0).getContent());
+        assertEquals("테스트 댓글 수정하였습니다.", commentService.findComments(board.getId()).get(0).getContent());
     }
 
     @Test
@@ -98,10 +101,10 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
-        CommentAddForm commentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
 
         //when
         commentService.addComment(commentAddForm);
@@ -119,14 +122,14 @@ class CommentServiceImplTest {
         Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        Board board = new Board("테스트 글", joinStudent, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
-        CommentAddForm commentAddForm1 = new CommentAddForm(post.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm1 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
         Comment parentComment = commentService.addComment(commentAddForm1);
 
         //when
-        CommentAddForm commentAddForm2 = new CommentAddForm(post.getId(), joinStudent.getId(), parentComment.getId(), "테스트 댓글입니다.");
+        CommentAddForm commentAddForm2 = new CommentAddForm(board.getId(), joinStudent.getId(), parentComment.getId(), "테스트 댓글입니다.");
         Comment childComment = commentService.addComment(commentAddForm2);
 
         //then
@@ -140,15 +143,16 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         // 게시물 작성
-        Board board = new Board("안녕하세요!", joinStudent, "처음 가입했습니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
         // 댓글 작성
-        CommentAddForm parentCommentAddForm = new CommentAddForm(post.getId(), joinStudent.getId(), null, "반가워요!");
+        CommentAddForm parentCommentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "반가워요!");
         Comment parentComment = commentService.addComment(parentCommentAddForm);
 
-        for (int i = 0; i < 10; i++) {
-            commentService.addComment(new CommentAddForm(post.getId(), joinStudent.getId(), null, "반가워요!"+i+i));
+        // 답글 작성
+        for (int i = 0; i < 5; i++) {
+            commentService.addComment(new CommentAddForm(board.getId(), joinStudent.getId(), parentComment.getId(), "반가워요!"+i+i));
         }
 
         em.flush();
@@ -156,5 +160,12 @@ class CommentServiceImplTest {
 
         List<Comment> findComments = commentService.findComments(board.getId());
         System.out.println("findComments = " + findComments);
+
+        for (Comment findComment : findComments) {
+            for (Comment child : findComment.getChildren()) {
+                child.getContent();
+            }
+        }
+
     }
 }

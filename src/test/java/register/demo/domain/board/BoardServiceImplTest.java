@@ -7,11 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
-import register.demo.web.board.BoardForm;
+import register.demo.web.board.form.BoardAddForm;
+import register.demo.web.board.form.BoardUpdateForm;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,11 +29,11 @@ class BoardServiceImplTest {
         studentService.join(student);
 
         //when
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board post = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
         //then
-        Board findBoard = boardService.findBoard(post.getId());
+        Board findBoard = boardService.findBoard(board.getId());
         assertEquals(board, findBoard);
     }
     
@@ -45,10 +44,9 @@ class BoardServiceImplTest {
         studentService.join(student);
 
         //when
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-
-        Board post = boardService.post(board);
-        Boolean isDelete = boardService.delete(post.getId());
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
+        Boolean isDelete = boardService.delete(board.getId());
 
         //then
         assertEquals(true, isDelete);
@@ -61,14 +59,14 @@ class BoardServiceImplTest {
         studentService.join(student);
 
         //when
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        BoardForm boardForm = new BoardForm("테스트 글 수정", student.getNickname(), "테스트 글 수정했습니다.");
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
-        Board post = boardService.post(board);
-        boardService.update(board.getId(), boardForm);
+        BoardUpdateForm boardUpdateForm = new BoardUpdateForm("테스트 글 수정", student.getNickname(), "테스트 글 수정했습니다.");
+        boardService.update(board.getId(), boardUpdateForm);
 
         //then
-        assertEquals("테스트 글 수정했습니다.", boardService.findBoard(post.getId()).getContent());
+        assertEquals("테스트 글 수정했습니다.", boardService.findBoard(board.getId()).getContent());
     }
 
     @Test
@@ -89,15 +87,15 @@ class BoardServiceImplTest {
         studentService.join(student);
 
         //when
-        Board board1 = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board board2 = new Board("게시글 테스트", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board board3 = new Board("테스트글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board board4 = new Board("게시글테스트", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm2 = new BoardAddForm("게시글 테스트", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm3 = new BoardAddForm("테스트글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm4 = new BoardAddForm("게시글테스트", "테스트 글입니다.", null, null);
 
-        boardService.post(board1);
-        boardService.post(board2);
-        boardService.post(board3);
-        boardService.post(board4);
+        boardService.post(boardAddForm1, student);
+        boardService.post(boardAddForm2, student);
+        boardService.post(boardAddForm3, student);
+        boardService.post(boardAddForm4, student);
 
         //then
         assertEquals(4, boardService.findBoard("테스트").size());
@@ -113,15 +111,15 @@ class BoardServiceImplTest {
         Student studentB = studentService.join(student2);
 
         //when
-        Board board1 = new Board("테스트 글", studentA, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board board2 = new Board("게시글 테스트", studentA, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board board3 = new Board("테스트글", studentB, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board board4 = new Board("게시글테스트", studentB, "테스트 글입니다.", LocalDateTime.now(), false, 0);
+        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm2 = new BoardAddForm("게시글 테스트", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm3 = new BoardAddForm("테스트글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm4 = new BoardAddForm("게시글테스트", "테스트 글입니다.", null, null);
 
-        boardService.post(board1);
-        boardService.post(board2);
-        boardService.post(board3);
-        boardService.post(board4);
+        boardService.post(boardAddForm1, studentA);
+        boardService.post(boardAddForm2, studentA);
+        boardService.post(boardAddForm3, studentB);
+        boardService.post(boardAddForm4, studentB);
 
         //then
         assertEquals(2, boardService.findBoard(studentA).size());
@@ -136,8 +134,8 @@ class BoardServiceImplTest {
         studentService.join(student);
                 
         //when
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
         
         //then
         assertEquals(2, boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")).size());
@@ -149,13 +147,13 @@ class BoardServiceImplTest {
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         studentService.join(student);
 
-        Board board = new Board("테스트 글", student, "테스트 글입니다.", LocalDateTime.now(), false, 0);
-        Board postBoard = boardService.post(board);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
 
         //when
-        boardService.updateHit(postBoard.getId());
+        boardService.updateHit(board.getId());
 
         //then
-        assertEquals(1, postBoard.getHit());
+        assertEquals(1, board.getHit());
     }
 }

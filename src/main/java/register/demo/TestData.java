@@ -7,8 +7,10 @@ import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.web.board.form.BoardAddForm;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Component
@@ -19,12 +21,12 @@ public class TestData {
     private final BoardService boardService;
 
     @PostConstruct
-    public void init() {
+    public void init() throws IOException {
         Student student = new Student("qwe@naver.com", "qwe", "qwe", "qwe", "qwe", "qwe");
         studentService.join(student);
 
-        Board board = new Board("게시글1", student, "테스트", LocalDateTime.now(), false, 0);
+        BoardAddForm boardAddForm = new BoardAddForm("게시글1", "테스트 글입니다.", null, null);
+        Board board = boardService.post(boardAddForm, student);
         //board.getComments().add(new Comment("qwe", "qwe", LocalDateTime.now()));
-        boardService.post(board);
     }
 }

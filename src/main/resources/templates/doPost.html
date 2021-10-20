@@ -13,7 +13,7 @@
 
     <div class="container" role="main">
         <h2>글 작성하기</h2>
-        <form class="form-group" th:method="post" th:action th:object="${boardForm}">
+        <form class="form-group" th:method="post" th:action th:object="${boardAddForm}" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title">제목</label>
                 <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요">
@@ -25,7 +25,11 @@
                 <textarea class="form-control" rows="10" name="content" id="content" placeholder="내용을 입력해 주세요" ></textarea>
                 <label class="err" th:errors="*{content}"></label>
             </div>
-            <div >
+            <div>
+                이미지 파일들<input type="file" multiple="multiple" name="imageFiles" id="imageFiles">
+                첨부파일<input type="file" multiple="multiple" name="generalFiles" id="generalFiles">
+            </div>
+            <div>
                 <button type="submit" class="btn btn-default btn-lg btn3d" id="btnSave">저장</button>
                 <button type="button" th:onclick="|location.href='@{/main/board}'|" class="btn btn-default btn-lg btn3d right" id="btnList">목록</button>
             </div>

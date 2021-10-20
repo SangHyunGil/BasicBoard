@@ -2,15 +2,17 @@ package register.demo.domain.board;
 
 import org.springframework.data.domain.Sort;
 import register.demo.domain.student.Student;
-import register.demo.web.board.BoardForm;
+import register.demo.web.board.form.BoardAddForm;
+import register.demo.web.board.form.BoardUpdateForm;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface BoardService {
 
-    Board post(Board board);
+    Board post(BoardAddForm boardForm, Student student) throws IOException;
 
-    Boolean update(Long boardId, BoardForm board);
+    Boolean update(Long boardId, BoardUpdateForm board);
 
     Boolean delete(Long boardId);
 
