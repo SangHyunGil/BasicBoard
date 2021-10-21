@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
+import register.demo.domain.board.SearchCondition;
+import register.demo.domain.board.SearchType;
 import register.demo.domain.file.AttachmentType;
 import register.demo.domain.file.FileStore;
 import register.demo.domain.student.Student;
@@ -33,6 +35,9 @@ import register.demo.web.login.LoginForm;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -46,16 +51,25 @@ public class BoardController {
     private final FileStore fileStore;
 
     @GetMapping
-    public String showBoard(@Login LoginForm loginForm, @RequestParam(defaultValue = "") String keyword, Model model, @PageableDefault Pageable pageable) {
-        log.info("searchForm : {}, {}, {}", keyword, pageable.getPageNumber(), pageable.getPageSize());
+    public String showBoard(@Login LoginForm loginForm, SearchType searchType, String keyword, Model model) {
+        Map<SearchType, String> searchTypes = getSearchTypesMap();
+        model.addAttribute("searchTypes", searchTypes);
         model.addAttribute("keyword", keyword);
         model.addAttribute("student", studentService.findStudent(loginForm.getEmail()).get());
         if (StringUtils.hasText(keyword)) {
-            model.addAttribute("boards", boardService.findBoard(keyword));
+            model.addAttribute("boards", boardService.findBoard(new SearchCondition(keyword, searchType)));
         } else {
             model.addAttribute("boards", boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")));
         }
         return "board";
+    }
+
+    private Map<SearchType, String> getSearchTypesMap() {
+        Map<SearchType, String> searchTypes = new LinkedHashMap<>();
+        searchTypes.put(SearchType.TIT, "제목");
+        searchTypes.put(SearchType.STUD, "닉네임");
+        searchTypes.put(SearchType.TITCONT, "제목+내용");
+        return searchTypes;
     }
 
     @GetMapping("/post")
@@ -74,8 +88,8 @@ public class BoardController {
 
         Student student = studentService.findStudent(loginForm.getEmail()).get();
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
-        boardService.post(boardPostDto);
-        return "redirect:/main/board";
+        Board post = boardService.post(boardPostDto);
+        return "redirect:/main/board/"+post.getId();
     }
 
     @GetMapping("/{postId}/update")
@@ -99,7 +113,7 @@ public class BoardController {
 
         BoardUpdateDto boardUpdateDto = boardUpdateForm.createBoardUpdateDto(postId);
         boardService.update(boardUpdateDto);
-        return "redirect:/main/board";
+        return "redirect:/main/board/"+postId;
     }
 
     @GetMapping("/{postId}/delete")
@@ -123,12 +137,12 @@ public class BoardController {
 
     @ResponseBody
     @GetMapping("/images/{filename}")
-    public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+    public Resource processImg(@PathVariable String filename) throws MalformedURLException {
         return new UrlResource("file:" + fileStore.createPath(filename, AttachmentType.IMAGE));
     }
 
     @GetMapping("/attaches/{filename}")
-    public ResponseEntity<Resource> downloadAttach(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
+    public ResponseEntity<Resource> processAttaches(@PathVariable String filename, @RequestParam String originName) throws MalformedURLException {
         UrlResource urlResource = new UrlResource("file:" + fileStore.createPath(filename, AttachmentType.GENERAL));
 
         String encodedUploadFileName = UriUtils.encode(originName, StandardCharsets.UTF_8);

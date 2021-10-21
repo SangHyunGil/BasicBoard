@@ -26,7 +26,7 @@ public class BoardServiceImpl implements BoardService{
     private final AttachmentService attachmentService;
 
     public Board post(BoardPostDto boardPostDto) throws IOException {
-        List<Attachment> attachments = attachmentService.saveFiles(boardPostDto.getAttachmentFiles());
+        List<Attachment> attachments = attachmentService.saveAttachments(boardPostDto.getAttachmentFiles());
         for (Attachment attachment : attachments) {
             log.info(attachment.getOriginFilename());
         }
@@ -61,12 +61,8 @@ public class BoardServiceImpl implements BoardService{
         return boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
     }
 
-    public List<Board> findBoard(String title) {
-        return boardRepository.findByTitle(title);
-    }
-
-    public List<Board> findBoard(Student student) {
-        return boardRepository.findByWriter(student);
+    public List<Board> findBoard(SearchCondition searchCondition) {
+        return boardRepository.search(searchCondition);
     }
 
     public List<Board> findBoards(Sort sort) {

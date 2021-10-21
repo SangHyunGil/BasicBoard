@@ -45,5 +45,4 @@ public class BoardPostDto {
                     .hit(0)
                     .build();
     }
-
 }

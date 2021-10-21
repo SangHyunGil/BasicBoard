@@ -102,7 +102,7 @@ class BoardServiceImplTest {
         boardService.post(boardPostDto2);
 
         //then
-        assertEquals(2, boardService.findBoard("테스트").size());
+        assertEquals(2, boardService.findBoard(new SearchCondition("테스트", SearchType.TIT)).size());
     }
 
     @Test
@@ -124,8 +124,8 @@ class BoardServiceImplTest {
         boardService.post(boardPostDto2);
 
         //then
-        assertEquals(1, boardService.findBoard(studentA).size());
-        assertEquals(1, boardService.findBoard(studentB).size());
+        assertEquals(1, boardService.findBoard(new SearchCondition("테스터1", SearchType.STUD)).size());
+        assertEquals(1, boardService.findBoard(new SearchCondition("테스터2", SearchType.STUD)).size());
 
     }
     

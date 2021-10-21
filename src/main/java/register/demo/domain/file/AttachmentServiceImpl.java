@@ -17,7 +17,7 @@ public class AttachmentServiceImpl implements AttachmentService{
     private final AttachmentRepository attachmentRepository;
     private final FileStore fileStore;
 
-    public List<Attachment> saveFiles(Map<AttachmentType, List<MultipartFile>> multipartFileListMap) throws IOException{
+    public List<Attachment> saveAttachments(Map<AttachmentType, List<MultipartFile>> multipartFileListMap) throws IOException{
         List<Attachment> imageFiles = fileStore.storeFiles(multipartFileListMap.get(AttachmentType.IMAGE), AttachmentType.IMAGE);
         List<Attachment> generalFiles = fileStore.storeFiles(multipartFileListMap.get(AttachmentType.GENERAL), AttachmentType.GENERAL);
         List<Attachment> result = Stream.of(imageFiles, generalFiles)

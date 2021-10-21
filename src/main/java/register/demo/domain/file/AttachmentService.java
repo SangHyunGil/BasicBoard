@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface AttachmentService {
 
-    List<Attachment> saveFiles(Map<AttachmentType, List<MultipartFile>> multipartFileListMap) throws IOException;
+    List<Attachment> saveAttachments(Map<AttachmentType, List<MultipartFile>> multipartFileListMap) throws IOException;
 
     Map<AttachmentType, List<Attachment>> findAttachments();
 }

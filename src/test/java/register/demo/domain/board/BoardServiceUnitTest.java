@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
+import register.demo.domain.comments.CommentRepository;
 import register.demo.domain.file.AttachmentService;
 import register.demo.domain.student.Student;
 import register.demo.web.board.dto.BoardPostDto;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceUnitTest {
@@ -31,6 +32,9 @@ public class BoardServiceUnitTest {
 
     @Mock
     BoardRepository boardRepository;
+
+    @Mock
+    CommentRepository commentRepository;
 
     @Mock
     AttachmentService attachmentService;
@@ -128,6 +132,7 @@ public class BoardServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
+        willDoNothing().given(commentRepository).deleteByBoardId(boardId);
         given(boardRepository.findById(boardId)).willReturn(Optional.ofNullable(board));
 
         //when
@@ -185,11 +190,13 @@ public class BoardServiceUnitTest {
                 .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
+        SearchCondition condition = new SearchCondition("테스트글", SearchType.TIT);
+
         //mocking
-        given(boardRepository.findByTitle("테스트 글")).willReturn(new ArrayList<>(Arrays.asList(board)));
+        given(boardRepository.search(condition)).willReturn(new ArrayList<>(Arrays.asList(board)));
 
         //when
-        Board findBoard = boardService.findBoard("테스트 글").get(0);
+        Board findBoard = boardService.findBoard(condition).get(0);
 
         //then
         assertEquals(board, findBoard);
@@ -214,11 +221,13 @@ public class BoardServiceUnitTest {
                 .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
+        SearchCondition condition = new SearchCondition("테스터", SearchType.STUD);
+
         //mocking
-        given(boardRepository.findByWriter(student)).willReturn(new ArrayList<>(Arrays.asList(board)));
+        given(boardRepository.search(condition)).willReturn(new ArrayList<>(Arrays.asList(board)));
 
         //when
-        Board findBoard = boardService.findBoard(student).get(0);
+        Board findBoard = boardService.findBoard(condition).get(0);
 
         //then
         assertEquals(board, findBoard);

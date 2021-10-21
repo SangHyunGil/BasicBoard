@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.board.Board;
+import register.demo.domain.board.BoardRepository;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
@@ -32,9 +33,7 @@ public class CommentServiceUnitTest {
     @Mock
     CommentRepository commentRepository;
     @Mock
-    BoardService boardService;
-    @Mock
-    StudentService studentService;
+    BoardRepository boardRepository;
 
     @Test
     public void 댓글달기() throws Exception {
@@ -69,6 +68,7 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
+        given(boardRepository.findById(boardId)).willReturn(Optional.of(board));
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         //when
@@ -254,6 +254,7 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(childComment, "id",childCommentId);
 
         //mocking
+        given(boardRepository.findById(boardId)).willReturn(Optional.of(board));
         given(commentRepository.save(any(Comment.class))).willReturn(childComment);
 
         //when

@@ -22,10 +22,7 @@ public interface BoardService {
 
     Board findBoard(Long boardId);
 
-    List<Board> findBoard(String title);
-
-    List<Board> findBoard(Student student);
+    List<Board> findBoard(SearchCondition searchCondition);
 
     List<Board> findBoards(Sort sort);
-
 }
