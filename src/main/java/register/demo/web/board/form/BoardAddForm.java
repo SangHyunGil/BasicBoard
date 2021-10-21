@@ -1,20 +1,21 @@
 package register.demo.web.board.form;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
-import register.demo.domain.board.Board;
-import register.demo.domain.file.Attachment;
+import register.demo.domain.file.AttachmentType;
 import register.demo.domain.student.Student;
+import register.demo.web.board.dto.BoardPostDto;
 
 import javax.validation.constraints.NotBlank;
-import java.io.Console;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Getter
+@Data
+@NoArgsConstructor
 public class BoardAddForm {
     @NotBlank
     private String title;
@@ -23,23 +24,29 @@ public class BoardAddForm {
     private List<MultipartFile> imageFiles;
     private List<MultipartFile> generalFiles;
 
-    public Board createBoard(Student writer) {
-        return Board.builder()
-                .writer(writer)
-                .title(title)
-                .content(content)
-                .isDeleted(false)
-                .writeTime(LocalDateTime.now())
-                .attachedFiles(new ArrayList<>())
-                .hit(0)
-                .build();
-    }
-
     @Builder
     public BoardAddForm(String title, String content, List<MultipartFile> imageFiles, List<MultipartFile> generalFiles) {
         this.title = title;
         this.content = content;
-        this.imageFiles = imageFiles;
-        this.generalFiles = generalFiles;
+        this.imageFiles = (imageFiles != null) ? imageFiles : new ArrayList<>();
+        this.generalFiles = (generalFiles != null) ? generalFiles : new ArrayList<>();
+    }
+
+
+    public BoardPostDto createBoardPostDto(Student student) {
+        Map<AttachmentType, List<MultipartFile>> attachments = getAttachmentTypeListMap();
+        return BoardPostDto.builder()
+                .title(title)
+                .writer(student)
+                .content(content)
+                .attachmentFiles(attachments)
+                .build();
+    }
+
+    private Map<AttachmentType, List<MultipartFile>> getAttachmentTypeListMap() {
+        Map<AttachmentType, List<MultipartFile>> attachments = new ConcurrentHashMap<>();
+        attachments.put(AttachmentType.IMAGE, imageFiles);
+        attachments.put(AttachmentType.GENERAL, generalFiles);
+        return attachments;
     }
 }

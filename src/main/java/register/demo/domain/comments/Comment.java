@@ -1,5 +1,6 @@
 package register.demo.domain.comments;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import register.demo.domain.board.Board;
@@ -44,6 +45,7 @@ public class Comment {
     protected Comment() {
     }
 
+    @Builder
     public Comment(Student writer, Board board, Comment parent, String content, LocalDateTime writeTime, Boolean isDelete) {
         this.writer = writer;
         this.board = board;

@@ -7,6 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.web.board.dto.BoardPostDto;
+import register.demo.web.board.dto.BoardUpdateDto;
 import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.board.form.BoardUpdateForm;
 
@@ -26,11 +28,12 @@ class BoardServiceImplTest {
     public void 글등록() throws Exception {
         //given
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        studentService.join(student);
+        Student joinStudent = studentService.join(student);
 
         //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
         //then
         Board findBoard = boardService.findBoard(board.getId());
@@ -41,11 +44,12 @@ class BoardServiceImplTest {
     public void 글삭제() throws Exception {
         //given
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        studentService.join(student);
+        Student joinStudent = studentService.join(student);
 
         //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
         Boolean isDelete = boardService.delete(board.getId());
 
         //then
@@ -56,14 +60,16 @@ class BoardServiceImplTest {
     public void 글수정() throws Exception {
         //given
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        studentService.join(student);
+        Student joinStudent = studentService.join(student);
 
         //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
         BoardUpdateForm boardUpdateForm = new BoardUpdateForm("테스트 글 수정", student.getNickname(), "테스트 글 수정했습니다.");
-        boardService.update(board.getId(), boardUpdateForm);
+        BoardUpdateDto boardUpdateDto = boardUpdateForm.createBoardUpdateDto(board.getId());
+        boardService.update(boardUpdateDto);
 
         //then
         assertEquals("테스트 글 수정했습니다.", boardService.findBoard(board.getId()).getContent());
@@ -84,21 +90,19 @@ class BoardServiceImplTest {
     public void 제목_글조회() throws Exception {
         //given
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        studentService.join(student);
+        Student joinStudent = studentService.join(student);
 
         //when
         BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        BoardAddForm boardAddForm2 = new BoardAddForm("게시글 테스트", "테스트 글입니다.", null, null);
-        BoardAddForm boardAddForm3 = new BoardAddForm("테스트글", "테스트 글입니다.", null, null);
-        BoardAddForm boardAddForm4 = new BoardAddForm("게시글테스트", "테스트 글입니다.", null, null);
+        BoardPostDto boardPostDto1 = boardAddForm1.createBoardPostDto(joinStudent);
+        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardPostDto boardPostDto2 = boardAddForm2.createBoardPostDto(joinStudent);
 
-        boardService.post(boardAddForm1, student);
-        boardService.post(boardAddForm2, student);
-        boardService.post(boardAddForm3, student);
-        boardService.post(boardAddForm4, student);
+        boardService.post(boardPostDto1);
+        boardService.post(boardPostDto2);
 
         //then
-        assertEquals(4, boardService.findBoard("테스트").size());
+        assertEquals(2, boardService.findBoard("테스트").size());
     }
 
     @Test
@@ -112,30 +116,29 @@ class BoardServiceImplTest {
 
         //when
         BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        BoardAddForm boardAddForm2 = new BoardAddForm("게시글 테스트", "테스트 글입니다.", null, null);
-        BoardAddForm boardAddForm3 = new BoardAddForm("테스트글", "테스트 글입니다.", null, null);
-        BoardAddForm boardAddForm4 = new BoardAddForm("게시글테스트", "테스트 글입니다.", null, null);
+        BoardPostDto boardPostDto1 = boardAddForm1.createBoardPostDto(studentA);
+        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardPostDto boardPostDto2 = boardAddForm2.createBoardPostDto(studentB);
 
-        boardService.post(boardAddForm1, studentA);
-        boardService.post(boardAddForm2, studentA);
-        boardService.post(boardAddForm3, studentB);
-        boardService.post(boardAddForm4, studentB);
+        boardService.post(boardPostDto1);
+        boardService.post(boardPostDto2);
 
         //then
-        assertEquals(2, boardService.findBoard(studentA).size());
-        assertEquals(2, boardService.findBoard(studentB).size());
+        assertEquals(1, boardService.findBoard(studentA).size());
+        assertEquals(1, boardService.findBoard(studentB).size());
 
     }
     
     @Test
     public void 전체글조회() throws Exception {
         //given
-        Student student = new Student("testID1@gmail.com", "testPW1", "테스터1", "테스터1", "컴공", "백엔드");
-        studentService.join(student);
-                
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
+        Student joinStudent = studentService.join(student);
+
         //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
         
         //then
         assertEquals(2, boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")).size());
@@ -145,10 +148,12 @@ class BoardServiceImplTest {
     public void 조회수() throws Exception {
         //given
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
-        studentService.join(student);
+        Student joinStudent = studentService.join(student);
 
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
         //when
         boardService.updateHit(board.getId());

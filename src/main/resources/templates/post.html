@@ -36,8 +36,8 @@
             <div>
                 <a th:each="generalFile : ${board.generalFiles}"
                    th:if="${generalFile.attachmentType == T(register.demo.domain.file.AttachmentType).GENERAL}"
-                   th:href="@{/main/board/attaches/{generalFile}(generalFile=${generalFile.storeFilename}, originName=${generalFile.originFileName})}"
-                   th:text="${generalFile.originFileName}" style="margin-right: 5px"/><br/>
+                   th:href="@{/main/board/attaches/{generalFile}(generalFile=${generalFile.storeFilename}, originName=${generalFile.originFilename})}"
+                   th:text="${generalFile.originFilename}" style="margin-right: 5px"/><br/>
             </div>
         </form>
         <hr>
@@ -65,7 +65,7 @@
 </body>
 <script th:inline="javascript">
     var boardId = [[${board.id}]];
-    var commentUrl = "comment";
+    var commentUrl = boardId+"/comment";
     $(function(){
         commentLoad([[${board.id}]])
     });
@@ -75,7 +75,6 @@
         $.ajax({
             url : commentUrl,
             type : 'get',
-            data : ({"boardId" : boardId}),
             success : function (data) {
                 console.log("댓글 Load");
 
@@ -84,7 +83,7 @@
                     let cId = data[i].id;
                     let cNickname = data[i].writer;
                     let cContent = data[i].content;
-                    let cChildren = data[i].children;
+                    let cChildren = data[i].children.reverse();
                     let cwriteTime = data[i].writeTime;
                     let cIsDelete = data[i].isDelete;
 
@@ -159,7 +158,6 @@
             type : 'post',
             contentType: "application/json",
             data: JSON.stringify({
-                "boardId" : boardId,
                 "content" : content.value
             }),
             success : function () {
@@ -180,7 +178,6 @@
             type : 'delete',
             contentType: "application/json",
             data: JSON.stringify({
-                "boardId" : boardId,
                 "commentId" : commentId
             }),
             success : function () {
@@ -266,7 +263,6 @@
             type : 'post',
             contentType: "application/json",
             data: JSON.stringify({
-                "boardId" : boardId,
                 "parentId" : commentId,
                 "content" : commentContent
             }),

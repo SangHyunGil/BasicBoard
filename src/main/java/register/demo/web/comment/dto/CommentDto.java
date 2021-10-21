@@ -1,6 +1,7 @@
 package register.demo.web.comment.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ToString
+@NoArgsConstructor
 public class CommentDto {
     private Long id;
     private String writer;

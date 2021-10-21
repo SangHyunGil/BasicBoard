@@ -5,15 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import register.demo.domain.comments.CommentRepository;
 import register.demo.domain.file.Attachment;
 import register.demo.domain.file.AttachmentService;
 import register.demo.domain.student.Student;
-import register.demo.domain.student.StudentService;
-import register.demo.web.board.form.BoardAddForm;
-import register.demo.web.board.form.BoardUpdateForm;
+import register.demo.web.board.dto.BoardPostDto;
+import register.demo.web.board.dto.BoardUpdateDto;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,38 +22,31 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
     private final AttachmentService attachmentService;
-    public Board post(BoardAddForm boardForm, Student student) throws IOException {
-        List<Attachment> attachments = new ArrayList<>();
-        if (boardForm.getImageFiles() != null) {
-            attachmentService.saveImages(boardForm.getImageFiles()).stream()
-                    .forEach(a->attachments.add(a));
-        }
-        if (boardForm.getGeneralFiles() != null) {
-            attachmentService.saveGeneralFiles(boardForm.getGeneralFiles())
-                    .forEach(a->attachments.add(a));
-        }
 
-        Board board = boardForm.createBoard(student);
-        System.out.println("board = " + board.getTitle());
+    public Board post(BoardPostDto boardPostDto) throws IOException {
+        List<Attachment> attachments = attachmentService.saveFiles(boardPostDto.getAttachmentFiles());
         for (Attachment attachment : attachments) {
-            log.info("attachments = {}", attachment);
+            log.info(attachment.getOriginFilename());
         }
-
+        Board board = boardPostDto.createBoard();
         attachments.stream()
                 .forEach(attachment -> board.setAttachment(attachment));
+
         return boardRepository.save(board);
     }
 
-    public Boolean update(Long boardId, BoardUpdateForm boardForm) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
-        board.setTitle(boardForm.getTitle());
-        board.setContent(boardForm.getContent());
+    public Boolean update(BoardUpdateDto boardUpdateDto) {
+        Board board = boardRepository.findById(boardUpdateDto.getBoardId()).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
+        board.setTitle(boardUpdateDto.getTitle());
+        board.setContent(boardUpdateDto.getContent());
         return true;
     }
 
     public Boolean delete(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
+        commentRepository.deleteByBoardId(boardId);
         boardRepository.delete(board);
         return true;
     }

@@ -22,7 +22,7 @@ public class Attachment {
     @Enumerated(EnumType.STRING)
     private AttachmentType attachmentType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 

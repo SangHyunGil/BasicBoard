@@ -23,6 +23,8 @@ import register.demo.domain.file.FileStore;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
 import register.demo.web.annotation.login.Login;
+import register.demo.web.board.dto.BoardPostDto;
+import register.demo.web.board.dto.BoardUpdateDto;
 import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.board.form.BoardForm;
 import register.demo.web.board.form.BoardUpdateForm;
@@ -62,7 +64,7 @@ public class BoardController {
     }
 
     @PostMapping("/post")
-    public String doPost(@Login LoginForm loginForm, @Validated @ModelAttribute BoardAddForm boardForm,
+    public String doPost(@Login LoginForm loginForm, @Validated @ModelAttribute BoardAddForm boardAddForm,
                          BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -70,8 +72,9 @@ public class BoardController {
             return "doPost";
         }
 
-        Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        boardService.post(boardForm, student.get());
+        Student student = studentService.findStudent(loginForm.getEmail()).get();
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
+        boardService.post(boardPostDto);
         return "redirect:/main/board";
     }
 
@@ -85,7 +88,7 @@ public class BoardController {
     }
 
     @PostMapping("/{postId}/update")
-    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute BoardUpdateForm boardForm,
+    public String updatePost(@PathVariable Long postId, @Validated @ModelAttribute BoardUpdateForm boardUpdateForm,
                              BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -94,7 +97,8 @@ public class BoardController {
             return "updatePost";
         }
 
-        boardService.update(postId, boardForm);
+        BoardUpdateDto boardUpdateDto = boardUpdateForm.createBoardUpdateDto(postId);
+        boardService.update(boardUpdateDto);
         return "redirect:/main/board";
     }
 

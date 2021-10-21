@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import register.demo.domain.board.BoardService;
-import register.demo.domain.student.StudentService;
-import register.demo.web.comment.form.CommentAddForm;
+import register.demo.domain.board.Board;
+import register.demo.domain.board.BoardRepository;
+import register.demo.web.comment.dto.CommentAddDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,24 +17,29 @@ import java.util.List;
 @Slf4j
 public class CommentServiceImpl implements CommentService{
 
-    private final StudentService studentService;
-    private final BoardService boardService;
+    private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
-    public Comment addComment(CommentAddForm commentAddForm) {
-        return commentRepository.save(makeComment(commentAddForm));
+    public Comment addComment(CommentAddDto commentAddDto) {
+        return commentRepository.save(makeComment(commentAddDto));
     }
 
-    private Comment makeComment(CommentAddForm commentAddForm) {
-        return new Comment(studentService.findStudent(commentAddForm.getStudentId()), boardService.findBoard(commentAddForm.getBoardId()), getParent(commentAddForm), commentAddForm.getContent(), LocalDateTime.now(), false);
+    private Comment makeComment(CommentAddDto commentAddDto) {
+        Board board = boardRepository.findById(commentAddDto.getBoardId()).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        return new Comment(commentAddDto.getStudent(), board, getParent(commentAddDto.getParentId()), commentAddDto.getContent(), LocalDateTime.now(), false);
     }
 
-    private Comment getParent(CommentAddForm commentAddForm) {
-        return commentAddForm.getParentId() != null ? commentRepository.findById(commentAddForm.getParentId()).orElseThrow(() -> new IllegalArgumentException("현재 댓글이 존재하지 않습니다.")) : null;
+    private Comment getParent(Long parentId) {
+        return parentId != null ? commentRepository.findById(parentId).orElseThrow(() -> new IllegalArgumentException("현재 댓글이 존재하지 않습니다.")) : null;
     }
 
     public List<Comment> findComments(Long boardId) {
         return commentRepository.findAllComments(boardId);
+    }
+
+    public Boolean deleteAll(Long boardId) {
+        commentRepository.deleteByBoardId(boardId);
+        return true;
     }
 
     public Boolean deleteComment(Long commentId) {
@@ -42,14 +47,19 @@ public class CommentServiceImpl implements CommentService{
         if (comment.getChildren().size() != 0) {
             comment.setIsDeleted(true);
         } else {
-            commentRepository.delete(getDeletableAncestorComment(comment));
+            doDelete(getDeletableAncestorComment(comment));
         }
-
         return true;
     }
 
+    private void doDelete(Comment comment) {
+        if (comment.getParent() != null) {
+            comment.getParent().getChildren().remove(comment);
+        }
+        commentRepository.delete(comment);
+    }
+
     private Comment getDeletableAncestorComment(Comment comment) {
-        log.info("댓글삭제에러, {}", comment.getContent());
         Comment parent = comment.getParent();
         if (parent != null && parent.getChildren().size() == 1 && parent.getIsDeleted())
             return getDeletableAncestorComment(parent);

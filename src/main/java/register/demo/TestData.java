@@ -7,6 +7,7 @@ import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.form.BoardAddForm;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +27,8 @@ public class TestData {
         studentService.join(student);
 
         BoardAddForm boardAddForm = new BoardAddForm("게시글1", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
+        Board board = boardService.post(boardPostDto);
         //board.getComments().add(new Comment("qwe", "qwe", LocalDateTime.now()));
     }
 }

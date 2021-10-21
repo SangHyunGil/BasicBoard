@@ -1,17 +1,27 @@
 package register.demo.web.comment.form;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
+import register.demo.domain.student.Student;
+import register.demo.web.comment.dto.CommentAddDto;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class CommentAddForm {
-    private Long boardId;
-    private Long studentId;
     private Long parentId;
     private String content;
 
-    public CommentAddForm() {
+    public CommentAddDto createCommentAddDto(Long boardId, Student student) {
+        return register.demo.web.comment.dto.CommentAddDto.builder()
+                    .boardId(boardId)
+                    .student(student)
+                    .parentId(parentId)
+                    .content(content)
+                    .build();
+    }
+
+    @Builder
+    public CommentAddForm(String content, Long parentId) {
+        this.content = content;
+        this.parentId = parentId;
     }
 }

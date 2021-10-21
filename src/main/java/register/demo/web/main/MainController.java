@@ -26,6 +26,7 @@ public class MainController {
 
     @GetMapping
     public String main(@Login LoginForm loginForm, Model model) {
+        log.info("login!");
         Optional<Student> loginStudent = studentService.findStudent(loginForm.getEmail());
         log.info("loginStudent : {}", loginStudent);
         model.addAttribute("loginStudent", loginStudent.get());

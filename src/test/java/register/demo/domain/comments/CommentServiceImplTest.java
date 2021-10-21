@@ -3,17 +3,17 @@ package register.demo.domain.comments;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
+import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.form.BoardAddForm;
+import register.demo.web.comment.dto.CommentAddDto;
 import register.demo.web.comment.form.CommentAddForm;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,17 +34,19 @@ class CommentServiceImplTest {
     @Test
     public void 댓글달기() throws Exception {
         //given
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
-        CommentAddForm commentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm("테스트 댓글입니다.", null);
+        CommentAddDto commentAddDto = commentAddForm.createCommentAddDto(board.getId(), joinStudent);
 
         //when
-
-        commentService.addComment(commentAddForm);
+        commentService.addComment(commentAddDto);
 
         //then
         assertEquals(1, commentService.findComments(board.getId()).size());
@@ -53,25 +55,28 @@ class CommentServiceImplTest {
     @Test
     public void 전체댓글조회() throws Exception {
         //given
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
-        CommentAddForm commentAddForm1 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "첫 번째 테스트 댓글입니다.");
-        CommentAddForm commentAddForm2 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "두 번째 테스트 댓글입니다.");
-        CommentAddForm commentAddForm3 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "세 번째 테스트 댓글입니다.");
+        CommentAddForm commentAddForm1 = new CommentAddForm("테스트 댓글입니다.", null);
+        CommentAddDto commentAddDto1 = commentAddForm1.createCommentAddDto(board.getId(), joinStudent);
+        CommentAddForm commentAddForm2 = new CommentAddForm("테스트 댓글입니다.", null);
+        CommentAddDto commentAddDto2 = commentAddForm2.createCommentAddDto(board.getId(), joinStudent);
+        CommentAddForm commentAddForm3 = new CommentAddForm("테스트 댓글입니다.", null);
+        CommentAddDto commentAddDto3 = commentAddForm3.createCommentAddDto(board.getId(), joinStudent);
 
-        commentService.addComment(commentAddForm1);
-        commentService.addComment(commentAddForm2);
-        commentService.addComment(commentAddForm3);
+        commentService.addComment(commentAddDto1);
+        commentService.addComment(commentAddDto2);
+        commentService.addComment(commentAddDto3);
 
         //when
         List<Comment> comments = commentService.findComments(board.getId());
-        for (Comment comment : comments) {
-            System.out.println("comment.getContent() = " + comment.getContent());
-        }
+
         //then
         assertEquals(3, comments.size());
     }
@@ -79,16 +84,19 @@ class CommentServiceImplTest {
     @Test
     public void 댓글수정() throws Exception {
         //given
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
-        CommentAddForm commentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm("테스트 댓글입니다.", null);
+        CommentAddDto commentAddDto = commentAddForm.createCommentAddDto(board.getId(), joinStudent);
 
         //when
-        Comment comment = commentService.addComment(commentAddForm);
+        Comment comment = commentService.addComment(commentAddDto);
         commentService.updateComment(comment.getId(), "테스트 댓글 수정하였습니다.");
 
         //then
@@ -98,16 +106,19 @@ class CommentServiceImplTest {
     @Test
     public void 댓글삭제() throws Exception {
         //given
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
-        CommentAddForm commentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
+        CommentAddForm commentAddForm = new CommentAddForm("테스트 댓글입니다.", null);
+        CommentAddDto commentAddDto = commentAddForm.createCommentAddDto(board.getId(), joinStudent);
 
         //when
-        commentService.addComment(commentAddForm);
+        commentService.addComment(commentAddDto);
 
         Comment findComment = commentService.findComments(board.getId()).get(0);
         Boolean isDelete = commentService.deleteComment(findComment.getId());
@@ -119,18 +130,22 @@ class CommentServiceImplTest {
     @Test
     public void 답글달기() throws Exception {
         //given
-        Student student = new Student("testId@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
-        CommentAddForm commentAddForm1 = new CommentAddForm(board.getId(), joinStudent.getId(), null, "테스트 댓글입니다.");
-        Comment parentComment = commentService.addComment(commentAddForm1);
+        CommentAddForm parentAddForm = new CommentAddForm("부모 댓글입니다.", null);
+        CommentAddDto parentAddDto = parentAddForm.createCommentAddDto(board.getId(), joinStudent);
+        Comment parentComment = commentService.addComment(parentAddDto);
 
         //when
-        CommentAddForm commentAddForm2 = new CommentAddForm(board.getId(), joinStudent.getId(), parentComment.getId(), "테스트 댓글입니다.");
-        Comment childComment = commentService.addComment(commentAddForm2);
+        CommentAddForm childAddForm = new CommentAddForm("자식 댓글입니다.", parentComment.getId());
+        CommentAddDto childAddDto = childAddForm.createCommentAddDto(board.getId(), joinStudent);
+        Comment childComment = commentService.addComment(childAddDto);
 
         //then
         assertEquals(parentComment, childComment.getParent());
@@ -138,21 +153,25 @@ class CommentServiceImplTest {
 
     @Test
     public void N_플러스_1_문제() throws Exception {
-        // 학생 가입
-        Student student = new Student("testID@gmail.com", "testPw", "테스터", "테스터", "컴공", "백엔드");
+        //given
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        // 게시물 작성
+        //when
         BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
-        Board board = boardService.post(boardAddForm, student);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
 
         // 댓글 작성
-        CommentAddForm parentCommentAddForm = new CommentAddForm(board.getId(), joinStudent.getId(), null, "반가워요!");
-        Comment parentComment = commentService.addComment(parentCommentAddForm);
+        CommentAddForm parentAddForm = new CommentAddForm("부모 댓글입니다.", null);
+        CommentAddDto parentAddDto = parentAddForm.createCommentAddDto(board.getId(), joinStudent);
+        Comment parentComment = commentService.addComment(parentAddDto);
 
         // 답글 작성
         for (int i = 0; i < 5; i++) {
-            commentService.addComment(new CommentAddForm(board.getId(), joinStudent.getId(), parentComment.getId(), "반가워요!"+i+i));
+            CommentAddForm childAddForm = new CommentAddForm(i+"번째 자식 댓글입니다.", parentComment.getId());
+            CommentAddDto childAddDto = childAddForm.createCommentAddDto(board.getId(), joinStudent);
+            commentService.addComment(childAddDto);
         }
 
         em.flush();

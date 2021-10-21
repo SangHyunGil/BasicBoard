@@ -7,13 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.board.Board;
-import register.demo.domain.board.BoardRepository;
 import register.demo.domain.board.BoardService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
-import register.demo.web.board.form.BoardAddForm;
+import register.demo.web.comment.dto.CommentAddDto;
 import register.demo.web.comment.form.CommentAddForm;
-import register.demo.web.comment.form.CommentUpdateForm;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -58,15 +56,23 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
-        CommentAddForm commentAddForm = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
-        Comment comment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        CommentAddForm commentAddForm = CommentAddForm.builder().content("테스트 댓글입니다.").parentId(null).build();
+        CommentAddDto commentAddDto = commentAddForm.createCommentAddDto(board.getId(), student);
+        Comment comment = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(null)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
         ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         //when
-        Comment findComment = commentService.addComment(commentAddForm);
+        Comment findComment = commentService.addComment(commentAddDto);
 
         //then
         assertEquals(comment, findComment);
@@ -92,13 +98,25 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId1 = 1L;
-        CommentAddForm commentAddForm1 = new CommentAddForm(boardId, StudentId, null, "테스트1 댓글입니다.");
-        Comment comment1 = new Comment(student, board, null, "테스트1 댓글입니다.", LocalDateTime.now(), false);
+        Comment comment1 = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(null)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
         ReflectionTestUtils.setField(comment1, "id",commentId1);
 
         Long commentId2 = 2L;
-        CommentAddForm commentAddForm2 = new CommentAddForm(boardId, StudentId, null, "테스트2 댓글입니다.");
-        Comment comment2 = new Comment(student, board, null, "테스트2 댓글입니다.", LocalDateTime.now(), false);
+        Comment comment2 = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(null)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
         ReflectionTestUtils.setField(comment2, "id",commentId2);
 
         //mocking
@@ -131,17 +149,21 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
-        CommentAddForm commentAddForm = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
-        Comment comment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        Comment comment = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(null)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
         ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
-        given(commentRepository.save(any(Comment.class))).willReturn(comment);
         given(commentRepository.findById(commentId)).willReturn(Optional.ofNullable(comment));
 
 
         //when
-        commentService.addComment(commentAddForm);
         Boolean isUpdate = commentService.updateComment(commentId, "테스트 댓글 수정입니다.");
 
         //then
@@ -168,16 +190,20 @@ public class CommentServiceUnitTest {
         ReflectionTestUtils.setField(board, "id", boardId);
 
         Long commentId = 1L;
-        CommentAddForm commentAddForm = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
-        Comment comment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
+        Comment comment = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(null)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
         ReflectionTestUtils.setField(comment, "id",commentId);
 
         //mocking
-        given(commentRepository.save(any(Comment.class))).willReturn(comment);
         given(commentRepository.findByIdWithParent(commentId)).willReturn(Optional.ofNullable(comment));
 
         //when
-        commentService.addComment(commentAddForm);
         Boolean isDelete = commentService.deleteComment(commentId);
 
         //then
@@ -203,21 +229,35 @@ public class CommentServiceUnitTest {
                 .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
-        Long commentId1 = 1L;
-        CommentAddForm commentAddForm1 = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
-        Comment parentComment = new Comment(student, board, null, "테스트 댓글입니다.", LocalDateTime.now(), false);
-        ReflectionTestUtils.setField(parentComment, "id",commentId1);
+        Long parentCommentId = 1L;
+        Comment parentComment = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(null)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
+        ReflectionTestUtils.setField(parentComment, "id",parentCommentId);
 
-        Long commentId2 = 2L;
-        CommentAddForm commentAddForm2 = new CommentAddForm(boardId, StudentId, null, "테스트 댓글입니다.");
-        Comment commentComment = new Comment(student, board, parentComment, "테스트 댓글입니다.", LocalDateTime.now(), false);
-        ReflectionTestUtils.setField(commentComment, "id",commentId2);
+        Long childCommentId = 2L;
+        CommentAddForm childCommentAddForm = CommentAddForm.builder().content("테스트 댓글입니다.").parentId(null).build();
+        CommentAddDto childCommentAddDto = childCommentAddForm.createCommentAddDto(board.getId(), student);
+        Comment childComment = Comment.builder()
+                .writer(student)
+                .board(board)
+                .parent(parentComment)
+                .content("테스트 댓글입니다.")
+                .writeTime(LocalDateTime.now())
+                .isDelete(false)
+                .build();
+        ReflectionTestUtils.setField(childComment, "id",childCommentId);
 
         //mocking
-        given(commentRepository.save(any(Comment.class))).willReturn(commentComment);
+        given(commentRepository.save(any(Comment.class))).willReturn(childComment);
 
         //when
-        Comment replyComment = commentService.addComment(commentAddForm2);
+        Comment replyComment = commentService.addComment(childCommentAddDto);
 
         //then
         assertEquals(parentComment, replyComment.getParent());

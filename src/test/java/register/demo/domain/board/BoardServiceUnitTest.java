@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.file.AttachmentService;
 import register.demo.domain.student.Student;
+import register.demo.web.board.dto.BoardPostDto;
+import register.demo.web.board.dto.BoardUpdateDto;
 import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.board.form.BoardUpdateForm;
 
@@ -49,6 +51,8 @@ public class BoardServiceUnitTest {
                 .content("테스트글입니다.")
                 .build();
 
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
+
         Long boardId = 2L;
         Board board = Board.builder()
                 .writer(student)
@@ -61,7 +65,7 @@ public class BoardServiceUnitTest {
         given(boardRepository.save(any())).willReturn(board);
 
         //when
-        Board findBoard = boardService.post(boardAddForm, student);
+        Board findBoard = boardService.post(boardPostDto);
 
         //then
         assertEquals(board, findBoard);
@@ -92,11 +96,13 @@ public class BoardServiceUnitTest {
                 .content("테스트 글 수정했습니다.")
                 .build();
 
+        BoardUpdateDto boardUpdateDto = boardUpdateForm.createBoardUpdateDto(boardId);
+
         //mocking
         given(boardRepository.findById(boardId)).willReturn(Optional.ofNullable(board));
 
         //when
-        Boolean isUpdate = boardService.update(boardId, boardUpdateForm);
+        Boolean isUpdate = boardService.update(boardUpdateDto);
 
         //then
         assertEquals(true, isUpdate);
@@ -273,6 +279,7 @@ public class BoardServiceUnitTest {
                 .writer(student)
                 .title("테스트글")
                 .content("테스트글입니다.")
+                .hit(0)
                 .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 

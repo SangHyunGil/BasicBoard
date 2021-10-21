@@ -9,6 +9,7 @@ import register.demo.domain.comments.CommentService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
 import register.demo.web.annotation.login.Login;
+import register.demo.web.comment.dto.CommentAddDto;
 import register.demo.web.comment.dto.CommentDto;
 import register.demo.web.comment.form.CommentAddForm;
 import register.demo.web.comment.form.CommentDeleteForm;
@@ -26,9 +27,9 @@ public class CommentController {
     private final CommentService commentService;
     private final StudentService studentService;
 
-    @GetMapping("/main/board/comment")
-    public List<CommentDto> getCommentList(@RequestParam Long boardId){
-        log.info("loadComment : {}", boardId);
+    @GetMapping("/main/board/{boardId}/comment")
+    public List<CommentDto> getCommentList(@PathVariable Long boardId){
+        log.info("getComment : {}", boardId);
         List<Comment> comments = commentService.findComments(boardId);
         List<CommentDto> result = getCommentDtos(comments);
 
@@ -53,25 +54,28 @@ public class CommentController {
         return c.getIsDeleted() ? "삭제된 댓글입니다." : c.getContent();
     }
 
-    @PostMapping("/main/board/comment")
-    public String addComment(@RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
-        log.info("addComment : {}, {}", commentAddForm.getBoardId(), commentAddForm.getContent());
-        Optional<Student> student = studentService.findStudent(loginForm.getEmail());
-        commentAddForm.setStudentId(student.get().getId());
-        commentService.addComment(commentAddForm);
+    @PostMapping("/main/board/{boardId}/comment")
+    public String addComment(@PathVariable Long boardId, @RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
+        log.info("addComment : {}, {}", boardId, commentAddForm.getContent());
+
+        Student student = studentService.findStudent(loginForm.getEmail()).get();
+        CommentAddDto commentAddDto = commentAddForm.createCommentAddDto(boardId, student);
+        commentService.addComment(commentAddDto);
         return "addComplete";
     }
 
-    @DeleteMapping("/main/board/comment")
-    public String deleteComment(@RequestBody CommentDeleteForm commentDeleteForm) {
-        log.info("deleteComment : {}, {}", commentDeleteForm.getCommentId());
+    @DeleteMapping("/main/board/{boardId}/comment")
+    public String deleteComment(@PathVariable Long boardId, @RequestBody CommentDeleteForm commentDeleteForm) {
+        log.info("deleteComment : {}", commentDeleteForm.getCommentId());
+
         commentService.deleteComment(commentDeleteForm.getCommentId());
         return "deleteComplete";
     }
 
-    @PatchMapping("/main/board/comment")
-    public String updateComment(@RequestBody CommentUpdateForm commentUpdateForm) {
+    @PatchMapping("/main/board/{boardId}/comment")
+    public String updateComment(@PathVariable Long boardId, @RequestBody CommentUpdateForm commentUpdateForm) {
         log.info("updateComment : {}, {}", commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
+
         commentService.updateComment(commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
         return "updateComplete";
     }
