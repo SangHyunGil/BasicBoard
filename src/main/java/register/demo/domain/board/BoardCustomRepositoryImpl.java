@@ -4,7 +4,6 @@ package register.demo.domain.board;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 
@@ -40,15 +39,14 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
         else {
             return titleCt(content).or(contentCt(content));
         }
-
     }
+
     BooleanBuilder userEq(String content) {
         return nullSafeBuilder(() -> board.writer.nickname.eq(content));
     }
     BooleanBuilder titleCt(String content) {
         return nullSafeBuilder(() -> board.title.contains(content));
     }
-
     BooleanBuilder contentCt(String content) {
         return nullSafeBuilder(() -> board.content.contains(content));
     }

@@ -19,15 +19,15 @@ import register.demo.web.login.LoginForm;
 import java.util.*;
 
 @Slf4j
-@Controller
-@ResponseBody
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/main/board/")
 public class CommentController {
 
     private final CommentService commentService;
     private final StudentService studentService;
 
-    @GetMapping("/main/board/{boardId}/comment")
+    @GetMapping("{boardId}/comment")
     public List<CommentDto> getCommentList(@PathVariable Long boardId){
         log.info("getComment : {}", boardId);
         List<Comment> comments = commentService.findComments(boardId);
@@ -54,7 +54,7 @@ public class CommentController {
         return c.getIsDeleted() ? "삭제된 댓글입니다." : c.getContent();
     }
 
-    @PostMapping("/main/board/{boardId}/comment")
+    @PostMapping("{boardId}/comment")
     public String addComment(@PathVariable Long boardId, @RequestBody CommentAddForm commentAddForm, @Login LoginForm loginForm) {
         log.info("addComment : {}, {}", boardId, commentAddForm.getContent());
 
@@ -64,7 +64,7 @@ public class CommentController {
         return "addComplete";
     }
 
-    @DeleteMapping("/main/board/{boardId}/comment")
+    @DeleteMapping("{boardId}/comment")
     public String deleteComment(@PathVariable Long boardId, @RequestBody CommentDeleteForm commentDeleteForm) {
         log.info("deleteComment : {}", commentDeleteForm.getCommentId());
 
@@ -72,7 +72,7 @@ public class CommentController {
         return "deleteComplete";
     }
 
-    @PatchMapping("/main/board/{boardId}/comment")
+    @PatchMapping("{boardId}/comment")
     public String updateComment(@PathVariable Long boardId, @RequestBody CommentUpdateForm commentUpdateForm) {
         log.info("updateComment : {}, {}", commentUpdateForm.getCommentId(), commentUpdateForm.getContent());
 

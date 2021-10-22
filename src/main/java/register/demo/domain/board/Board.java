@@ -49,7 +49,6 @@ public class Board {
         this.hit = hit;
     }
 
-
     public void setAttachment(Attachment attachment) {
         this.attachedFiles.add(attachment);
         attachment.setBoard(this);

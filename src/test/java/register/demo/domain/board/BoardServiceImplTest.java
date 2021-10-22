@@ -1,5 +1,6 @@
 package register.demo.domain.board;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +14,9 @@ import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.board.form.BoardUpdateForm;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -160,5 +163,35 @@ class BoardServiceImplTest {
 
         //then
         assertEquals(1, board.getHit());
+    }
+
+    @Test
+    public void 검색() throws Exception {
+        //given
+        Student student1 = new Student("testID1@gmail.com", "testPW1", "테스터A", "테스터A", "컴공", "백엔드");
+        Student studentA = studentService.join(student1);
+
+        Student student2 = new Student("testID2@gmail.com", "testPW2", "테스터B", "테스터B", "컴공", "백엔드");
+        Student studentB = studentService.join(student2);
+
+        BoardAddForm boardAddForm1 = new BoardAddForm("반가워요~ 하이요!", "방가방가!", null, null);
+        BoardPostDto boardPostDto1 = boardAddForm1.createBoardPostDto(studentA);
+        boardService.post(boardPostDto1);
+
+        BoardAddForm boardAddForm2 = new BoardAddForm("방가! 다시왔어요!", "오랜만이네요 :(", null, null);
+        BoardPostDto boardPostDto2 = boardAddForm2.createBoardPostDto(studentB);
+        boardService.post(boardPostDto2);
+
+
+        //when
+        List<Board> titleBasedSearch = boardService.findBoard(new SearchCondition("반가", SearchType.TIT));
+        List<Board> nicknameBasedSearch = boardService.findBoard(new SearchCondition("테스터B", SearchType.STUD));
+        List<Board> titleAndContentBasedSearch = boardService.findBoard(new SearchCondition("방가", SearchType.TITCONT));
+
+
+        //then
+        assertThat(titleBasedSearch).extracting("title").containsExactly("반가워요~ 하이요!");
+        assertThat(nicknameBasedSearch).extracting("title").containsExactly("방가! 다시왔어요!");
+        assertThat(titleAndContentBasedSearch).extracting("title").containsExactlyInAnyOrder("반가워요~ 하이요!", "방가! 다시왔어요!");
     }
 }

@@ -80,15 +80,15 @@
     </div>
     <div class="wrapper">
         <div class="header">
-            <form class="form-group" th:method="get" th:action>
-                <select id="searchType" name="searchType">
-                    <option th:each="sType : ${searchTypes}" th:text="${sType.value}" th:value="${sType.key}"></option>
-                </select>
-                <div class="search-bar">
-                    <input class="form-control" type="text" placeholder="제목으로 검색하기" id="keyword" name="keyword" th:value="${keyword}">
-                </div>
-            </form>
-            <div class="user-settings">
+                <form class="form-group" th:method="get" th:action>
+                    <select id="searchType" name="searchType">
+                        <option th:each="sType : ${searchTypes}" th:text="${sType.value}" th:value="${sType.key}"></option>
+                    </select>
+                    <div class="search-bar">
+                        <input class="form-control" type="text" placeholder="제목으로 검색하기" id="keyword" name="keyword" th:value="${keyword}">
+                    </div>
+                </form>
+                <div class="user-settings">
                 <img class="user-img" src="https://images.unsplash.com/photo-1587918842454-870dbd18261a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=943&q=80" alt="">
                 <div class="user-name" th:text="${student.nickname}">Thomas</div>
                 <svg viewBox="0 0 492 492" fill="currentColor">

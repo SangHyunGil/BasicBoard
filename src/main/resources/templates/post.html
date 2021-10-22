@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
     <link rel="stylesheet" th:href="@{css/style.css}">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -41,6 +45,10 @@
             </div>
         </form>
         <hr>
+        <div th:class="like_section">
+
+        </div>
+        <hr>
             <div class="mb-3">
                 <section>
                     <div th:class="|reply_list${board.id}|">
@@ -66,12 +74,54 @@
 <script th:inline="javascript">
     var boardId = [[${board.id}]];
     var commentUrl = boardId+"/comment";
+    var postLikeUrl = boardId+"/postLike";
     $(function(){
         commentLoad([[${board.id}]])
+        postLikeLoad([[${board.id}]])
     });
 
-    const commentLoad = function(no) {
+    const postLikeLoad = function(no) {
+        $.ajax({
+            url : postLikeUrl,
+            type : 'get',
+            success : function (data) {
+                console.log("좋아요 Load" + postLikeUrl);
 
+                let html = "";
+                let postLikeNum = data.postLikeNum;
+                let checkLiked = data.checkLiked;
+
+                html += "<div align='center'>";
+                html += "<b>" + postLikeNum + "</b>";
+                if (checkLiked) {
+                    html += "<a onclick='pushLikeButton(" + boardId + ")'><i class=\"fas fa-heart\" style='margin-right: 10px'></i></a>"
+                } else {
+                    html += "<a onclick='pushLikeButton(" + boardId + ")'><i class=\"far fa-heart\"></i></a>";
+                }
+                html += "</div>";
+                $(".like_section").html(html);
+            },
+            error:function () {
+                alert('좋아요 로드 에러');
+            }
+        });
+    }
+
+    const pushLikeButton = function(no) {
+        $.ajax({
+            url : postLikeUrl,
+            type : 'post',
+            success : function () {
+                console.log("좋아요 버튼 성공");
+                postLikeLoad(boardId);
+            },
+            error:function () {
+                alert('좋아요 버튼 에러');
+            }
+        });
+    }
+
+    const commentLoad = function(no) {
         $.ajax({
             url : commentUrl,
             type : 'get',
