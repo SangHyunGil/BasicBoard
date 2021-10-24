@@ -2,11 +2,16 @@ package register.demo.domain.board;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import register.demo.TestData;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.like.PostLikeService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
@@ -45,7 +50,7 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -61,7 +66,7 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
         Boolean isDelete = boardService.delete(board.getId());
@@ -77,7 +82,7 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -92,12 +97,21 @@ class BoardServiceImplTest {
     @Test
     public void ID_글조회() throws Exception {
         //given
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
+        Student joinStudent = studentService.join(student);
 
         //when
-        String title = boardService.findBoard(1L).getTitle();
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        Board board = boardService.post(boardPostDto);
+
+        BoardUpdateForm boardUpdateForm = new BoardUpdateForm("테스트 글 수정", student.getNickname(), "테스트 글 수정했습니다.");
+        BoardUpdateDto boardUpdateDto = boardUpdateForm.createBoardUpdateDto(board.getId());
+        boardService.update(boardUpdateDto);
+        String title = boardService.findBoard(board.getId()).getTitle();
 
         //then
-        assertEquals("게시글0", title);
+        assertEquals("테스트 글 수정", title);
     }
 
     @Test
@@ -107,16 +121,16 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto1 = boardAddForm1.createBoardPostDto(joinStudent);
-        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto2 = boardAddForm2.createBoardPostDto(joinStudent);
 
         boardService.post(boardPostDto1);
         boardService.post(boardPostDto2);
 
         //then
-        assertEquals(2, boardService.findBoard(new SearchCondition("테스트", SearchType.TIT)).size());
+        assertEquals(2, boardService.findBoards(new SearchCondition("테스트", SearchType.TIT), PageRequest.of(0, 4)).getContent().size());
     }
 
     @Test
@@ -129,17 +143,17 @@ class BoardServiceImplTest {
         Student studentB = studentService.join(student2);
 
         //when
-        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto1 = boardAddForm1.createBoardPostDto(studentA);
-        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto2 = boardAddForm2.createBoardPostDto(studentB);
 
         boardService.post(boardPostDto1);
         boardService.post(boardPostDto2);
 
         //then
-        assertEquals(1, boardService.findBoard(new SearchCondition("테스터1", SearchType.STUD)).size());
-        assertEquals(1, boardService.findBoard(new SearchCondition("테스터2", SearchType.STUD)).size());
+        assertEquals(1, boardService.findBoards(new SearchCondition("테스터1", SearchType.STUD), PageRequest.of(0, 4)).getContent().size());
+        assertEquals(1, boardService.findBoards(new SearchCondition("테스터2", SearchType.STUD), PageRequest.of(0, 4)).getContent().size());
 
     }
     
@@ -150,7 +164,7 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
         
@@ -165,7 +179,7 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -185,25 +199,25 @@ class BoardServiceImplTest {
         Student student2 = new Student("testID2@gmail.com", "testPW2", "테스터B", "테스터B", "컴공", "백엔드");
         Student studentB = studentService.join(student2);
 
-        BoardAddForm boardAddForm1 = new BoardAddForm("반가워요~ 하이요!", "방가방가!", null, null);
+        BoardAddForm boardAddForm1 = new BoardAddForm("테스트 글A", "테스트A 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto1 = boardAddForm1.createBoardPostDto(studentA);
         boardService.post(boardPostDto1);
 
-        BoardAddForm boardAddForm2 = new BoardAddForm("방가! 다시왔어요!", "오랜만이네요 :(", null, null);
+        BoardAddForm boardAddForm2 = new BoardAddForm("테스트 글B", "테스트B 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto2 = boardAddForm2.createBoardPostDto(studentB);
         boardService.post(boardPostDto2);
 
 
         //when
-        List<Board> titleBasedSearch = boardService.findBoard(new SearchCondition("반가", SearchType.TIT));
-        List<Board> nicknameBasedSearch = boardService.findBoard(new SearchCondition("테스터B", SearchType.STUD));
-        List<Board> titleAndContentBasedSearch = boardService.findBoard(new SearchCondition("방가", SearchType.TITCONT));
+        Page<Board> titleBasedSearch = boardService.findBoards(new SearchCondition("테스트 글A", SearchType.TIT), PageRequest.of(0, 4));
+        Page<Board> nicknameBasedSearch = boardService.findBoards(new SearchCondition("테스터A", SearchType.STUD), PageRequest.of(0, 4));
+        Page<Board> titleAndContentBasedSearch = boardService.findBoards(new SearchCondition("테스트", SearchType.TITCONT), PageRequest.of(0, 4));
 
 
         //then
-        assertThat(titleBasedSearch).extracting("title").containsExactly("반가워요~ 하이요!");
-        assertThat(nicknameBasedSearch).extracting("title").containsExactly("방가! 다시왔어요!");
-        assertThat(titleAndContentBasedSearch).extracting("title").containsExactlyInAnyOrder("반가워요~ 하이요!", "방가! 다시왔어요!");
+        assertThat(titleBasedSearch.getContent()).extracting("title").containsExactly("테스트 글A");
+        assertThat(nicknameBasedSearch.getContent()).extracting("title").containsExactly("테스트 글A");
+        assertThat(titleAndContentBasedSearch.getContent()).extracting("title").containsExactlyInAnyOrder("테스트 글A", "테스트 글B");
     }
 
     @Test
@@ -213,7 +227,7 @@ class BoardServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         boardService.post(boardPostDto);
 
@@ -228,7 +242,6 @@ class BoardServiceImplTest {
     }
 
     @Test
-    @Commit
     public void 인기게시물() throws Exception {
         //given
         List<Student> students = new ArrayList<>();
@@ -241,7 +254,7 @@ class BoardServiceImplTest {
         //when
         List<Board> boards = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            BoardAddForm boardAddForm = new BoardAddForm("테스트 글" + i, "테스트 글입니다." + i, null, null);
+            BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
             BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(students.get(i));
             Board post = boardService.post(boardPostDto);
             boards.add(post);

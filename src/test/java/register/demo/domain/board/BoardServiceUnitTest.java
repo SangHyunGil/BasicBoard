@@ -5,11 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.test.util.ReflectionTestUtils;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryRepository;
+import register.demo.domain.category.CategoryService;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.comments.CommentRepository;
 import register.demo.domain.file.AttachmentService;
 import register.demo.domain.student.Student;
@@ -43,6 +44,9 @@ public class BoardServiceUnitTest {
     @Mock
     AttachmentService attachmentService;
 
+    @Mock
+    CategoryRepository categoryRepository;
+
     @Test
     public void 글등록() throws Exception {
         //given
@@ -61,15 +65,21 @@ public class BoardServiceUnitTest {
 
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
 
+        Long CategoryId = 2L;
+        Category category = new Category(CategoryType.BACK);
+        ReflectionTestUtils.setField(category, "id", CategoryId);
+
         Long boardId = 2L;
         Board board = Board.builder()
                 .writer(student)
                 .title("테스트글")
                 .content("테스트글입니다.")
+                .category(category)
                 .build();
         ReflectionTestUtils.setField(board, "id", boardId);
 
         //mocking
+        given(categoryRepository.save(any())).willReturn(category);
         given(boardRepository.save(any())).willReturn(board);
 
         //when
@@ -137,6 +147,7 @@ public class BoardServiceUnitTest {
 
         //mocking
         willDoNothing().given(commentRepository).deleteByBoardId(boardId);
+        willDoNothing().given(categoryRepository).delete(any());
         given(boardRepository.findById(boardId)).willReturn(Optional.ofNullable(board));
 
         //when
@@ -197,10 +208,10 @@ public class BoardServiceUnitTest {
         SearchCondition condition = new SearchCondition("테스트글", SearchType.TIT);
 
         //mocking
-        given(boardRepository.search(condition)).willReturn(new ArrayList<>(Arrays.asList(board)));
+        given(boardRepository.findBoardByPaging(any())).willReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(board))));
 
         //when
-        Board findBoard = boardService.findBoard(condition).get(0);
+        Board findBoard = boardService.findBoards(PageRequest.of(0, 4)).getContent().get(0);
 
         //then
         assertEquals(board, findBoard);
@@ -228,10 +239,10 @@ public class BoardServiceUnitTest {
         SearchCondition condition = new SearchCondition("테스터", SearchType.STUD);
 
         //mocking
-        given(boardRepository.search(condition)).willReturn(new ArrayList<>(Arrays.asList(board)));
+        given(boardRepository.search(eq(condition), any(Pageable.class))).willReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(board))));
 
         //when
-        Board findBoard = boardService.findBoard(condition).get(0);
+        Board findBoard = boardService.findBoards(condition, PageRequest.of(0, 4)).getContent().get(0);
 
         //then
         assertEquals(board, findBoard);

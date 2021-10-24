@@ -6,6 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryRepository;
+import register.demo.domain.category.CategoryService;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.comments.CommentRepository;
 import register.demo.domain.file.Attachment;
 import register.demo.domain.file.AttachmentService;
@@ -26,13 +30,17 @@ public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final AttachmentService attachmentService;
+    private final CategoryRepository categoryRepository;
 
     public Board post(BoardPostDto boardPostDto) throws IOException {
         List<Attachment> attachments = attachmentService.saveAttachments(boardPostDto.getAttachmentFiles());
         for (Attachment attachment : attachments) {
             log.info(attachment.getOriginFilename());
         }
+        Category category = categoryRepository.save(boardPostDto.getCategory());
         Board board = boardPostDto.createBoard();
+        board.setCategory(category);
+
         attachments.stream()
                 .forEach(attachment -> board.setAttachment(attachment));
 
@@ -49,6 +57,7 @@ public class BoardServiceImpl implements BoardService{
     public Boolean delete(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
         commentRepository.deleteByBoardId(boardId);
+        categoryRepository.delete(board.getCategory());
         boardRepository.delete(board);
         return true;
     }
@@ -65,8 +74,13 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Transactional(readOnly = true)
-    public List<Board> findBoard(SearchCondition searchCondition) {
-        return boardRepository.search(searchCondition);
+    public Page<Board> findBoards(SearchCondition searchCondition, Pageable pageable) {
+        return boardRepository.search(searchCondition, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Board> findBoards(CategoryType categoryType, Pageable pageable) {
+        return boardRepository.classifyByCategory(categoryType, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -78,4 +92,5 @@ public class BoardServiceImpl implements BoardService{
     public List<HotPostDto> findHotPosts() {
         return boardRepository.todayHotPost();
     }
+
 }

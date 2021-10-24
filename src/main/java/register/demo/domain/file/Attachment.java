@@ -14,8 +14,8 @@ import javax.persistence.*;
         sequenceName = "ATTACHMENT_SEQ"
 )
 public class Attachment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "attachment_id")
     private Long id;
     private String originFilename;
     private String storeFilename;

@@ -15,6 +15,10 @@
         <h2>글 작성하기</h2>
         <form class="form-group" th:method="post" th:action th:object="${boardAddForm}" enctype="multipart/form-data">
             <div class="mb-3">
+                <select th:field="*{categoryType}">
+                    <option th:each="categoryType : ${T(register.demo.domain.category.CategoryType).values()}"
+                            th:text="${categoryType.description}" th:value="${categoryType}"></option>
+                </select>
                 <label for="title">제목</label>
                 <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요">
                 <label class="err" th:errors="*{title}"></label>

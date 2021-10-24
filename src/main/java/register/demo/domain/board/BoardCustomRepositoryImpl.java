@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryType;
 import register.demo.web.board.dto.HotPostDto;
 import register.demo.web.board.search.SearchCondition;
 import register.demo.web.board.search.SearchType;
@@ -32,12 +34,19 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public List<Board> search(SearchCondition condition) {
-        return queryFactory
+    public Page<Board> search(SearchCondition condition, Pageable pageable) {
+        QueryResults<Board> results = queryFactory
                 .selectFrom(board)
                 .where(isSearchable(condition.getType(), condition.getContent()))
                 .orderBy(board.writeTime.desc())
-                .fetch();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Board> content = results.getResults();
+        long num = results.getTotal();
+
+        return new PageImpl<>(content, pageable, num);
     }
 
     BooleanBuilder isSearchable(SearchType sType, String content) {
@@ -85,6 +94,21 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository{
         log.info("pageable : {}", pageable.getOffset());
         QueryResults<Board> results = queryFactory
                 .selectFrom(board)
+                .orderBy(board.writeTime.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Board> content = results.getResults();
+        long num = results.getTotal();
+
+        return new PageImpl<>(content, pageable, num);
+    }
+
+    public Page<Board> classifyByCategory(CategoryType categoryType, Pageable pageable) {
+        QueryResults<Board> results = queryFactory
+                .selectFrom(board)
+                .where(board.category.categoryType.eq(categoryType))
                 .orderBy(board.writeTime.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import register.demo.domain.board.Board;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.file.AttachmentType;
 import register.demo.domain.student.Student;
 import register.demo.web.board.form.BoardAddForm;
@@ -24,13 +26,15 @@ public class BoardPostDto {
     private String title;
     @NotBlank
     private String content;
+    private Category category;
     private Map<AttachmentType, List<MultipartFile>> attachmentFiles = new ConcurrentHashMap<>();
 
     @Builder
-    public BoardPostDto(Student writer, String title, String content, Map<AttachmentType, List<MultipartFile>> attachmentFiles) {
+    public BoardPostDto(Student writer, String title, String content, Category category, Map<AttachmentType, List<MultipartFile>> attachmentFiles) {
         this.writer = writer;
         this.title = title;
         this.content = content;
+        this.category = category;
         this.attachmentFiles = attachmentFiles;
     }
 

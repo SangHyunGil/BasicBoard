@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
 import register.demo.web.board.dto.BoardPostDto;
@@ -38,7 +39,7 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -59,7 +60,7 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -88,7 +89,7 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -110,7 +111,7 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -134,7 +135,7 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -158,7 +159,7 @@ class CommentServiceImplTest {
         Student joinStudent = studentService.join(student);
 
         //when
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 

@@ -2,6 +2,8 @@ package register.demo.domain.board;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryType;
 import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.dto.BoardUpdateDto;
 import register.demo.web.board.dto.HotPostDto;
@@ -22,7 +24,9 @@ public interface BoardService {
 
     Board findBoard(Long boardId);
 
-    List<Board> findBoard(SearchCondition searchCondition);
+    Page<Board> findBoards(SearchCondition searchCondition, Pageable pageable);
+
+    Page<Board> findBoards(CategoryType categoryType, Pageable pageable);
 
     Page<Board> findBoards(Pageable pageable);
 

@@ -2,6 +2,7 @@ package register.demo.domain.board;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import register.demo.domain.category.Category;
 import register.demo.domain.file.Attachment;
 import register.demo.domain.student.Student;
 
@@ -28,6 +29,10 @@ public class Board {
     @JoinColumn(name = "student_id")
     private Student writer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Attachment> attachedFiles = new ArrayList<>();
 
@@ -39,8 +44,9 @@ public class Board {
     private Integer hit;
 
     @Builder
-    public Board(Student writer, List<Attachment> attachedFiles, LocalDateTime writeTime, Boolean isDeleted, String title, String content, Integer hit) {
+    public Board(Student writer, Category category, List<Attachment> attachedFiles, LocalDateTime writeTime, Boolean isDeleted, String title, String content, Integer hit) {
         this.writer = writer;
+        this.category = category;
         this.attachedFiles = attachedFiles;
         this.writeTime = writeTime;
         this.isDeleted = isDeleted;

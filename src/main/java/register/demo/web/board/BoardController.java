@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryType;
 import register.demo.web.board.search.SearchCondition;
 import register.demo.domain.file.AttachmentType;
 import register.demo.domain.file.FileStore;
@@ -47,14 +49,18 @@ public class BoardController {
 
     @GetMapping
     public String showBoard(@Login LoginForm loginForm, @PageableDefault(size = 4) Pageable pageable,
-            SearchCondition searchCondition, Model model) {
-        model.addAttribute("searchCondition", searchCondition);
+                            SearchCondition searchCondition, @RequestParam(required = false) CategoryType category, Model model) {
+        model.addAttribute("category", category);
         model.addAttribute("student", studentService.findStudent(loginForm.getEmail()).get());
         model.addAttribute("hotPosts", boardService.findHotPosts());
 
         if (StringUtils.hasText(searchCondition.getContent())) {
-            model.addAttribute("boards", boardService.findBoard(searchCondition));
-        } else {
+            model.addAttribute("boards", boardService.findBoards(searchCondition, pageable));
+        }
+        else if (category != null) {
+            model.addAttribute("boards", boardService.findBoards(category, pageable));
+        }
+        else {
             model.addAttribute("boards", boardService.findBoards(pageable));
         }
         return "board";

@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
 import register.demo.web.board.dto.BoardPostDto;
@@ -31,7 +32,7 @@ class PostLikeServiceImplTest {
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 
@@ -52,7 +53,7 @@ class PostLikeServiceImplTest {
         Student student2 = new Student("testID2@gmail.com", "testPW2", "테스터B", "테스터B", "컴공", "백엔드");
         Student joinStudentB = studentService.join(student2);
 
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudentA);
         Board board = boardService.post(boardPostDto);
 
@@ -78,7 +79,7 @@ class PostLikeServiceImplTest {
         Student student2 = new Student("testID2@gmail.com", "testPW2", "테스터B", "테스터B", "컴공", "백엔드");
         Student joinStudentB = studentService.join(student2);
 
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudentA);
         Board board = boardService.post(boardPostDto);
 
@@ -101,7 +102,7 @@ class PostLikeServiceImplTest {
         Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
         Student joinStudent = studentService.join(student);
 
-        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", CategoryType.BACK, null, null);
         BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
         Board board = boardService.post(boardPostDto);
 

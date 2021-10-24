@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+import register.demo.domain.category.Category;
+import register.demo.domain.category.CategoryType;
 import register.demo.domain.file.AttachmentType;
 import register.demo.domain.student.Student;
 import register.demo.web.board.dto.BoardPostDto;
@@ -21,17 +23,18 @@ public class BoardAddForm {
     private String title;
     @NotBlank
     private String content;
+    private CategoryType categoryType;
     private List<MultipartFile> imageFiles;
     private List<MultipartFile> generalFiles;
 
     @Builder
-    public BoardAddForm(String title, String content, List<MultipartFile> imageFiles, List<MultipartFile> generalFiles) {
+    public BoardAddForm(String title, String content, CategoryType categoryType, List<MultipartFile> imageFiles, List<MultipartFile> generalFiles) {
         this.title = title;
         this.content = content;
+        this.categoryType = categoryType;
         this.imageFiles = (imageFiles != null) ? imageFiles : new ArrayList<>();
         this.generalFiles = (generalFiles != null) ? generalFiles : new ArrayList<>();
     }
-
 
     public BoardPostDto createBoardPostDto(Student student) {
         Map<AttachmentType, List<MultipartFile>> attachments = getAttachmentTypeListMap();
@@ -39,6 +42,7 @@ public class BoardAddForm {
                 .title(title)
                 .writer(student)
                 .content(content)
+                .category(new Category(categoryType))
                 .attachmentFiles(attachments)
                 .build();
     }

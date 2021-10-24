@@ -45,12 +45,14 @@ class StudentServiceImplTest {
     @Test
     public void ID_회원조회() throws Exception {
         //given
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
 
         //when
-        String nickname = studentRepository.findById(1L).get().getNickname();
+        Student join = studentService.join(student);
+        String nickname = studentRepository.findById(join.getId()).get().getNickname();
 
         //then
-        assertEquals("qwe", nickname);
+        assertEquals("테스터", nickname);
     }
 
     @Test
@@ -66,7 +68,7 @@ class StudentServiceImplTest {
         List<Student> allStudent = studentService.findAllStudent();
 
         //then
-        assertEquals(3, allStudent.size());
+        assertEquals(2, allStudent.size());
 
     }
 }

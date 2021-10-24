@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 )
 public class PostLike {
     @Id @GeneratedValue
+    @Column(name = "postlike_id")
     private Long id;
 
     @ManyToOne

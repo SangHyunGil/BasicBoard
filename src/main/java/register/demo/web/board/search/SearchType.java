@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum SearchType {
-    TIT("제목"), STUD("작성자"), TITCONT("제목+작성자");
+    TIT("제목"), STUD("작성자"), TITCONT("제목+내용");
 
     String description;
 

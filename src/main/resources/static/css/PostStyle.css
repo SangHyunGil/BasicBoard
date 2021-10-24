@@ -1,0 +1,20 @@
+.like_section b {
+    font-size: 5rem;
+}
+
+.heart {
+    font-size: 5rem;
+}
+
+.rereply {
+    flex: 1;
+}
+
+.reply-block {
+    display: flex;
+
+}
+.reply-block i {
+    transform: rotate(-180deg);
+    margin-left: 3%;
+}
