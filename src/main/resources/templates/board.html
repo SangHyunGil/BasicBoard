@@ -84,11 +84,11 @@
     <div class="wrapper">
         <div class="header">
                 <form class="form-group" th:method="get" th:action th:object="${searchCondition}">
-                    <select id="searchType" name="searchType" th:field="*{type}">
-                        <option th:each="searchType : ${T(register.demo.web.board.search.SearchType).values()}"
-                                th:text="${searchType.description}" th:value="${searchType}"></option>
-                    </select>
                     <div class="search-bar">
+                        <select id="searchType" name="searchType" th:field="*{type}">
+                            <option th:each="searchType : ${T(register.demo.web.board.search.SearchType).values()}"
+                                    th:text="${searchType.description}" th:value="${searchType}"></option>
+                        </select>
                         <input class="form-control" type="text" placeholder="검색하기" th:field="*{content}" th:value="*{content}">
                     </div>
                 </form>
@@ -147,7 +147,7 @@
                     <div class="video-view" th:field="${board.hit}" th:text="|조회수 : ${board.hit}|"></div>
                 </div>
             </div>
-            <div th:if="${!boards.isEmpty()}">
+            <div class="paging-wrapper" th:if="${!boards.isEmpty()}">
                 <nav
                         th:with="pageNumber = ${boards.pageable.pageNumber},
                         pageSize = 5,
