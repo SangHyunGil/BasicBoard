@@ -33,6 +33,7 @@ public class CommentServiceImpl implements CommentService{
         return parentId != null ? commentRepository.findById(parentId).orElseThrow(() -> new IllegalArgumentException("현재 댓글이 존재하지 않습니다.")) : null;
     }
 
+    @Transactional(readOnly = true)
     public List<Comment> findComments(Long boardId) {
         return commentRepository.findAllComments(boardId);
     }

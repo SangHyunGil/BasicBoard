@@ -1,19 +1,26 @@
 package register.demo.domain.board;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+import register.demo.domain.like.PostLikeService;
 import register.demo.domain.student.Student;
 import register.demo.domain.student.StudentService;
 import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.dto.BoardUpdateDto;
+import register.demo.web.board.dto.HotPostDto;
 import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.board.form.BoardUpdateForm;
+import register.demo.web.board.search.SearchCondition;
+import register.demo.web.board.search.SearchType;
+import register.demo.web.postlike.dto.PostLikeDto;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,9 +30,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class BoardServiceImplTest {
     @Autowired
+    EntityManager em;
+    @Autowired
     StudentService studentService;
     @Autowired
     BoardService boardService;
+    @Autowired
+    PostLikeService postLikeService;
 
     @Test
     public void 글등록() throws Exception {
@@ -86,7 +97,7 @@ class BoardServiceImplTest {
         String title = boardService.findBoard(1L).getTitle();
 
         //then
-        assertEquals("게시글1", title);
+        assertEquals("게시글0", title);
     }
 
     @Test
@@ -144,7 +155,7 @@ class BoardServiceImplTest {
         Board board = boardService.post(boardPostDto);
         
         //then
-        assertEquals(2, boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")).size());
+        assertEquals(2, boardService.findBoards(PageRequest.of(0, 2)).getSize());
     }
 
     @Test
@@ -193,5 +204,58 @@ class BoardServiceImplTest {
         assertThat(titleBasedSearch).extracting("title").containsExactly("반가워요~ 하이요!");
         assertThat(nicknameBasedSearch).extracting("title").containsExactly("방가! 다시왔어요!");
         assertThat(titleAndContentBasedSearch).extracting("title").containsExactlyInAnyOrder("반가워요~ 하이요!", "방가! 다시왔어요!");
+    }
+
+    @Test
+    public void 조인테스트() throws Exception {
+        //given
+        Student student = new Student("testID@gmail.com", "testPW", "테스터", "테스터", "컴공", "백엔드");
+        Student joinStudent = studentService.join(student);
+
+        //when
+        BoardAddForm boardAddForm = new BoardAddForm("테스트 글", "테스트 글입니다.", null, null);
+        BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(joinStudent);
+        boardService.post(boardPostDto);
+
+        em.flush();
+        em.clear();
+
+        //then
+        List<String> resultList = em.createQuery(
+                        "select w.nickname from Board b " +
+                                "join b.writer w", String.class)
+                .getResultList();
+    }
+
+    @Test
+    @Commit
+    public void 인기게시물() throws Exception {
+        //given
+        List<Student> students = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Student student = new Student("testID" + i + "@gmail.com", "testPW" + i, "테스터" + i, "테스터" + i, "컴공", "백엔드");
+            Student joinStudent = studentService.join(student);
+            students.add(joinStudent);
+        }
+
+        //when
+        List<Board> boards = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            BoardAddForm boardAddForm = new BoardAddForm("테스트 글" + i, "테스트 글입니다." + i, null, null);
+            BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(students.get(i));
+            Board post = boardService.post(boardPostDto);
+            boards.add(post);
+        }
+
+        for (int i = 0; i < 5; i+=2) {
+            for (int j = 0; j < 4; j++) {
+                PostLikeDto postLikeDto = new PostLikeDto(students.get(j), boards.get(i).getId());
+                postLikeService.pushLikeButton(postLikeDto);
+            }
+        }
+
+        //then
+        List<HotPostDto> hotPosts = boardService.findHotPosts();
+        assertThat(hotPosts).extracting("num").containsExactly(4L, 4L, 4L);
     }
 }

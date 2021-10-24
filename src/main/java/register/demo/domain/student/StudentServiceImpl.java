@@ -18,14 +18,17 @@ public class StudentServiceImpl implements StudentService{
         return studentRepository.save(student);
     }
 
+    @Transactional(readOnly = true)
     public Student findStudent(Long id) {
         return studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 학생은 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public Optional<Student> findStudent(String email) {
         return studentRepository.findByEmail(email);
     }
 
+    @Transactional(readOnly = true)
     public List<Student> findAllStudent() {
         return studentRepository.findAll();
     }

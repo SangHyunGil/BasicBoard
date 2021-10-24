@@ -30,10 +30,12 @@ public class PostLikeServiceImpl implements PostLikeService{
         return true;
     }
 
-    private Board getBoard(PostLikeDto postLikeDto) {
+    @Transactional(readOnly = true)
+    public Board getBoard(PostLikeDto postLikeDto) {
         return boardRepository.findById(postLikeDto.getBoardId()).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public PostLikeResponseDto getPostLikeInfo(PostLikeDto postLikeDto) {
         long postLikeNum = getPostLikeNum(postLikeDto);
         boolean check = checkPushedLike(postLikeDto);
@@ -41,12 +43,14 @@ public class PostLikeServiceImpl implements PostLikeService{
         return new PostLikeResponseDto(postLikeNum, check);
     }
 
-    private boolean checkPushedLike(PostLikeDto postLikeDto) {
+    @Transactional(readOnly = true)
+    public boolean checkPushedLike(PostLikeDto postLikeDto) {
         return postLikeRepository.exist(postLikeDto.getStudent().getId(), postLikeDto.getBoardId())
                 .isPresent();
     }
 
-    private long getPostLikeNum(PostLikeDto postLikeDto) {
+    @Transactional(readOnly = true)
+    public long getPostLikeNum(PostLikeDto postLikeDto) {
         return postLikeRepository.findPostLikeNum(postLikeDto.getBoardId());
     }
 

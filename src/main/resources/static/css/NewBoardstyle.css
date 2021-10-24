@@ -331,6 +331,11 @@ button.vjs-play-control.vjs-control.vjs-button { margin-left: 40px; }
 
 .video-js.vjs-fluid { border-radius: 20px; overflow: hidden; min-height: 414px; }
 
+.disabled {
+  pointer-events:none; //This makes it not clickable
+  opacity:0.6;         //This grays it out to look disabled
+}
+
 @media screen and (max-width: 735px) { .main-blogs { -ms-flex-wrap: wrap; flex-wrap: wrap; }
   .main-blog, .main-blog + .main-blog { width: 100%; }
   .videos { -ms-grid-columns: 1fr; grid-template-columns: 1fr; }

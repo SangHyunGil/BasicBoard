@@ -2,15 +2,17 @@ package register.demo.domain.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import register.demo.domain.comments.CommentRepository;
 import register.demo.domain.file.Attachment;
 import register.demo.domain.file.AttachmentService;
-import register.demo.domain.student.Student;
 import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.dto.BoardUpdateDto;
+import register.demo.web.board.dto.HotPostDto;
+import register.demo.web.board.search.SearchCondition;
 
 import java.io.IOException;
 import java.util.List;
@@ -57,17 +59,23 @@ public class BoardServiceImpl implements BoardService{
         return true;
     }
 
+    @Transactional(readOnly = true)
     public Board findBoard(Long boardId) {
         return boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글은 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public List<Board> findBoard(SearchCondition searchCondition) {
         return boardRepository.search(searchCondition);
     }
 
-    public List<Board> findBoards(Sort sort) {
-        return boardRepository.findAll(sort);
+    @Transactional(readOnly = true)
+    public Page<Board> findBoards(Pageable pageable) {
+        return boardRepository.findBoardByPaging(pageable);
     }
 
-
+    @Transactional(readOnly = true)
+    public List<HotPostDto> findHotPosts() {
+        return boardRepository.todayHotPost();
+    }
 }

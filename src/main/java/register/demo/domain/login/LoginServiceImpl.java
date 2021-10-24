@@ -14,6 +14,7 @@ public class LoginServiceImpl implements LoginService{
 
     private final StudentRepository studentRepository;
 
+    @Transactional(readOnly = true)
     public Student login(LoginForm loginForm) {
         return studentRepository.findByEmail(loginForm.getEmail())
                     .filter(student -> student.getPassword().equals(loginForm.getPassword()))

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import register.demo.domain.comments.CommentRepository;
@@ -14,8 +17,9 @@ import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.dto.BoardUpdateDto;
 import register.demo.web.board.form.BoardAddForm;
 import register.demo.web.board.form.BoardUpdateForm;
+import register.demo.web.board.search.SearchCondition;
+import register.demo.web.board.search.SearchType;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -263,13 +267,13 @@ public class BoardServiceUnitTest {
 
 
         //mocking
-        given(boardRepository.findAll(Sort.by(Sort.Direction.DESC, "writeTime"))).willReturn(new ArrayList<>(Arrays.asList(board1, board2)));
+        given(boardRepository.findBoardByPaging(any())).willReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(board1, board2))));
 
         //when
-        List<Board> findBoards = boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime"));
+        Page<Board> findBoards = boardService.findBoards(PageRequest.of(0, 2));
 
         //then
-        assertEquals(2, findBoards.size());
+        assertEquals(2, findBoards.getSize());
     }
 
     @Test

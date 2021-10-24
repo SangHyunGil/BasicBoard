@@ -1,11 +1,11 @@
 package register.demo.domain.board;
 
-import org.springframework.data.domain.Sort;
-import register.demo.domain.student.Student;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import register.demo.web.board.dto.BoardPostDto;
 import register.demo.web.board.dto.BoardUpdateDto;
-import register.demo.web.board.form.BoardAddForm;
-import register.demo.web.board.form.BoardUpdateForm;
+import register.demo.web.board.dto.HotPostDto;
+import register.demo.web.board.search.SearchCondition;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,5 +24,7 @@ public interface BoardService {
 
     List<Board> findBoard(SearchCondition searchCondition);
 
-    List<Board> findBoards(Sort sort);
+    Page<Board> findBoards(Pageable pageable);
+
+    List<HotPostDto> findHotPosts();
 }

@@ -2,6 +2,7 @@ package register.demo.domain.file;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class AttachmentServiceImpl implements AttachmentService{
         return result;
     }
 
+    @Transactional(readOnly = true)
     public Map<AttachmentType, List<Attachment>> findAttachments() {
         List<Attachment> attachments = attachmentRepository.findAll();
         Map<AttachmentType, List<Attachment>> result = attachments.stream()

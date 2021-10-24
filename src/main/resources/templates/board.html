@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../../static/css/NewBoardstyle.css" th:href="@{./css/NewBoardstyle.css}">
     <link rel="stylesheet" href="../../css/NewBoardstyle.css">
     <title>Document</title>
+    <style>
+        ul li {list-style-type: none; float: left; margin-left: 20px; outline: 1px;}
+    </style>
 </head>
 <body>
 <div class="container">
@@ -80,12 +83,13 @@
     </div>
     <div class="wrapper">
         <div class="header">
-                <form class="form-group" th:method="get" th:action>
-                    <select id="searchType" name="searchType">
-                        <option th:each="sType : ${searchTypes}" th:text="${sType.value}" th:value="${sType.key}"></option>
+                <form class="form-group" th:method="get" th:action th:object="${searchCondition}">
+                    <select id="searchType" name="searchType" th:field="*{type}">
+                        <option th:each="searchType : ${T(register.demo.web.board.search.SearchType).values()}"
+                                th:text="${searchType.description}" th:value="${searchType}"></option>
                     </select>
                     <div class="search-bar">
-                        <input class="form-control" type="text" placeholder="제목으로 검색하기" id="keyword" name="keyword" th:value="${keyword}">
+                        <input class="form-control" type="text" placeholder="검색하기" th:field="*{content}" th:value="*{content}">
                     </div>
                 </form>
                 <div class="user-settings">
@@ -103,28 +107,12 @@
             </div>
         </div>
         <div class="main-container">
-            <div class="main-header anim" style="--delay: 0s">Discover</div>
+            <div class="small-header anim" style="--delay: 0s">오늘의 인기글</div>
             <div class="main-blogs">
-                <div class="main-blog anim" style="--delay: .1s">
-                    <div class="main-blog__title">a</div>
-                    <div class="main-blog__author">
-                        <div class="author-img__wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
-                                <path d="M20 6L9 17l-5-5" />
-                            </svg>
-                            <img class="author-img" src="https://images.unsplash.com/photo-1560941001-d4b52ad00ecc?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80" />
-                        </div>
-                        <div class="author-detail">
-                            <div class="author-name">Thomas Hope</div>
-                            <div class="author-info">53K views <span class="seperate"></span>2 weeks ago</div>
-                        </div>
-                    </div>
-                    <div class="main-blog__time">7 min</div>
-                </div>
-                <div class="main-blog anim" style="--delay: .2s">
-                    <div class="main-blog__title">Skateboard Tips You need to know</div>
+                <div class="main-blog anim" style="--delay: .2s" th:each="hotpost : ${hotPosts}" th:if="${hotPosts != null}" th:onclick="|location.href='@{/main/board/{id}(id=${hotpost.board.id})}'|">
+                    <div class="main-blog__title" th:text="${hotpost.board.title}"></div>
                     <div class="main-blog__author tips">
-                        <div class="main-blog__time">7 min</div>
+                        <div class="main-blog__time" th:text="|좋아요 : ${hotpost.num}회|">7 min</div>
                         <div class="author-img__wrapper">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check">
                                 <path d="M20 6L9 17l-5-5" />
@@ -132,15 +120,15 @@
                             <img class="author-img" src="https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mzl8fG1lbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" />
                         </div>
                         <div class="author-detail">
-                            <div class="author-name">Tony Andrew</div>
-                            <div class="author-info">53K views <span></span>2 weeks ago</div>
+                            <div class="author-name" th:text="${hotpost.board.writer.nickname}">Tony Andrew</div>
+                            <div class="author-info" th:text="${{hotpost.board.writeTime}}"></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="small-header anim" style="--delay: .3s">게시판</div>
             <div class="videos">
-                <div class="video anim" style="--delay: .4s" th:each="board : ${boards}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
+                <div class="video anim" style="--delay: .4s" th:each="board : ${boards.content}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
                     <div class="video-time" th:field="${board.id}" th:text="${board.id}"></div>
                     <div class="video-wrapper">
                         <video muted="" autoplay loop class="random-video">
@@ -158,6 +146,45 @@
                     <div class="video-view" th:field="${board.writeTime}" th:text="${{board.writeTime}}"></div>
                     <div class="video-view" th:field="${board.hit}" th:text="|조회수 : ${board.hit}|"></div>
                 </div>
+            </div>
+            <div th:if="${!boards.isEmpty()}">
+                <nav
+                        th:with="pageNumber = ${boards.pageable.pageNumber},
+                        pageSize = 5,
+                        totalPages = ${boards.totalPages},
+                        startPage = ${T(Math).floor(pageNumber / pageSize) * pageSize + 1},
+                        tempEndPage = ${startPage + pageSize - 1},
+                        endPage = (${tempEndPage > totalPages ? totalPages : tempEndPage})"
+                        aria-label="Page navigation">
+                    <ul class="pagination" display="flex">
+                        <li class="page-item" th:classappend="${pageNumber <= pageSize} ? 'disabled'">
+                            <a class="page-link" th:href="@{/main/board}">
+                                <span>&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${T(Math).floor(totalPages/5)*5 > startPage} ? 'disabled'" >
+                            <a class="page-link" th:href="@{/main/board(page=${#numbers.formatDecimal(startPage - pageSize, 0, -1)})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
+                        </li>
+
+                        <li th:each="page: ${#numbers.sequence(startPage, endPage)}" th:classappend="${page == pageNumber + 1} ? 'active'" class="page-item">
+                            <a th:text="${page}" class="page-link" th:href="@{/main/board(page=${page})}"></a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${T(Math).floor(totalPages/5)*5 <= startPage} ? 'disabled'" >
+                            <a class="page-link" th:href="@{/main/board(page=${#numbers.formatDecimal(startPage + pageSize, 0, -1)})}" aria-label="Next">
+                                <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend=" ${T(Math).floor(totalPages/5)*5 <= startPage} ? 'disabled'">
+                            <a class="page-link" th:href="@{/main/board(page=${totalPages})}">
+                                <span>&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
             <div class="stream-area">
                 <div class="video-stream">

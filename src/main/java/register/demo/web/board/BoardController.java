@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import register.demo.domain.board.Board;
 import register.demo.domain.board.BoardService;
-import register.demo.domain.board.SearchCondition;
-import register.demo.domain.board.SearchType;
+import register.demo.web.board.search.SearchCondition;
 import register.demo.domain.file.AttachmentType;
 import register.demo.domain.file.FileStore;
 import register.demo.domain.student.Student;
@@ -35,9 +33,6 @@ import register.demo.web.login.LoginForm;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -51,25 +46,18 @@ public class BoardController {
     private final FileStore fileStore;
 
     @GetMapping
-    public String showBoard(@Login LoginForm loginForm, SearchType searchType, String keyword, Model model) {
-        Map<SearchType, String> searchTypes = getSearchTypesMap();
-        model.addAttribute("searchTypes", searchTypes);
-        model.addAttribute("keyword", keyword);
+    public String showBoard(@Login LoginForm loginForm, @PageableDefault(size = 4) Pageable pageable,
+            SearchCondition searchCondition, Model model) {
+        model.addAttribute("searchCondition", searchCondition);
         model.addAttribute("student", studentService.findStudent(loginForm.getEmail()).get());
-        if (StringUtils.hasText(keyword)) {
-            model.addAttribute("boards", boardService.findBoard(new SearchCondition(keyword, searchType)));
+        model.addAttribute("hotPosts", boardService.findHotPosts());
+
+        if (StringUtils.hasText(searchCondition.getContent())) {
+            model.addAttribute("boards", boardService.findBoard(searchCondition));
         } else {
-            model.addAttribute("boards", boardService.findBoards(Sort.by(Sort.Direction.DESC, "writeTime")));
+            model.addAttribute("boards", boardService.findBoards(pageable));
         }
         return "board";
-    }
-
-    private Map<SearchType, String> getSearchTypesMap() {
-        Map<SearchType, String> searchTypes = new LinkedHashMap<>();
-        searchTypes.put(SearchType.TIT, "제목");
-        searchTypes.put(SearchType.STUD, "닉네임");
-        searchTypes.put(SearchType.TITCONT, "제목+내용");
-        return searchTypes;
     }
 
     @GetMapping("/post")
