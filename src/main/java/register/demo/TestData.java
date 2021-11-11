@@ -32,13 +32,13 @@ public class TestData {
         Student student = new Student("qwe@naver.com", "qwe", "qwe", "qwe", "qwe", "qwe");
         Student joinStudent = studentService.join(student);
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 10; i++) {
             BoardAddForm boardAddForm = new BoardAddForm("FrontEnd 게시글"+i, "테스트 글입니다.", CategoryType.FRONT, null, null);
             BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
             boardService.post(boardPostDto);
         }
 
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 10; i++) {
             BoardAddForm boardAddForm = new BoardAddForm("BackEnd 게시글"+i, "테스트 글입니다.", CategoryType.BACK, null, null);
             BoardPostDto boardPostDto = boardAddForm.createBoardPostDto(student);
             boardService.post(boardPostDto);

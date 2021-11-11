@@ -53,5 +53,4 @@ public class PostLikeServiceImpl implements PostLikeService{
     public long getPostLikeNum(PostLikeDto postLikeDto) {
         return postLikeRepository.findPostLikeNum(postLikeDto.getBoardId());
     }
-
 }

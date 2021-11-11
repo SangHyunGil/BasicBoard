@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,10 +7,11 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
     />
-    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link rel="stylesheet" href="../../css/PostStyle.css">
+    <link rel="stylesheet" th:href="@{./css/PostStyle.css}">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 <article>
@@ -49,23 +50,23 @@
 
         </div>
         <hr>
-            <div class="mb-3">
-                <section>
-                    <div th:class="|reply_list${board.id}|">
+        <div class="mb-3">
+            <section>
+                <div th:class="|reply_list${board.id}|">
 
-                    </div>
+                </div>
 
-                    <div class="mb-3" style="display: flex;">
-                        <input type="text" class="form-control" name="cContent" id="cContent" placeholder="댓글을 입력해 주세요">
-                        <button type="button" th:onclick="commentPost()" class="btn btn-default btn-lg btn3d right" id="cBtn">댓글작성</button>
-                    </div>
-                </section>
-            </div>
+                <div class="mb-3" style="display: flex;">
+                    <input type="text" class="form-control" name="cContent" id="cContent" placeholder="댓글을 입력해 주세요">
+                    <button type="button" th:onclick="commentPost()" class="btn btn-default btn-lg btn3d right" id="cBtn">댓글작성</button>
+                </div>
+            </section>
+        </div>
         <hr>
         <div >
-            <button type="btn" th:onclick="|location.href='@{/main/board}'|" class="btn btn-default btn-lg btn3d right" id="btnList">목록</button>
-            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/update(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">수정</button>
-            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/delete(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right" id="btnList">삭제</button>
+            <button type="btn" th:onclick="|location.href='@{/main/board}'|" class="btn btn-default btn-lg btn3d right btnList">목록</button>
+            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/update(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right btnList">수정</button>
+            <button type="btn" th:if="${board.writer == student.nickname}" th:onclick="|location.href='@{/main/board/{boardId}/delete(boardId=${board.id})}'|" class="btn btn-default btn-lg btn3d right btnList">삭제</button>
         </div>
 
     </div>
@@ -94,9 +95,9 @@
                 html += "<div align='center'>";
                 html += "<b>" + postLikeNum + "</b>";
                 if (checkLiked) {
-                    html += "<a onclick='pushLikeButton(" + boardId + ")'><i class=\"fas fa-heart\" style='margin-right: 10px'></i></a>"
+                    html += "<a class='heart' onclick='pushLikeButton(" + boardId + ")'><i class=\"fas fa-heart\" style='margin-right: 10px'></i></a>"
                 } else {
-                    html += "<a onclick='pushLikeButton(" + boardId + ")'><i class=\"far fa-heart\"></i></a>";
+                    html += "<a class='heart' onclick='pushLikeButton(" + boardId + ")'><i class=\"far fa-heart\"></i></a>";
                 }
                 html += "</div>";
                 $(".like_section").html(html);
@@ -135,7 +136,6 @@
                     let cContent = data[i].content;
                     let cChildren = data[i].children.reverse();
                     let cwriteTime = data[i].writeTime;
-                    let cIsDelete = data[i].isDelete;
 
                     html += "<div id='cm" + cId + "' style='border: 1px solid black; margin-bottom: 5px'>";
                     html += "<div>";
@@ -159,31 +159,40 @@
                             html += "</div>";
                         }
                     }
+                    html += "</div>";
                     while (cChildren.length != 0) {
                         let child = cChildren.pop();
-                            html += "<div id='cm" + child.id + "' style='border: 1px solid black; margin-bottom: 5px'>";
-                            html += "<div>";
-                            html += "<b>" + "작성자 : " + child.writer + "</b>";
-                            html += "</div>";
-                            html += "<div>";
-                            html += "내용 : " + child.content;
-                            html += "</div>";
-                            html += "<div>";
-                            html += "작성 시간 : " + child.writeTime;
-                            html += "</div>";
-                            html += "<div>";
+                        html += "<div class='reply-block'>";
+                        html += "<div>";
+                        html += "<i class='fas fa-reply fa-5x'></i>";
+                        html += "</div>";
+                        html += "<div id='cm" + child.id + "' class='rereply' style='border: 1px solid black; margin-bottom: 5px'>";
+                        html += "<div>";
+                        html += "<b>" + "작성자 : " + child.writer + "</b>";
+                        html += "</div>";
+                        html += "<div>";
+                        html += "내용 : " + child.content;
+                        html += "</div>";
+                        html += "<div>";
+                        html += "작성 시간 : " + child.writeTime;
+                        html += "</div>";
+                        html += "<div>";
 
-                            if (child.content != "삭제된 댓글입니다.") {
-                                if (child.writer == [[ ${student.nickname }]]) {
-                                    html += "<div>";
-                                    html += "<a href='javacript:void(0);' onclick='commentDelete(" + child.id + ")'>댓글 삭제</a>";
-                                    html += "</div>";
-                                    html += "<div>";
-                                    html += "<a href='javacript:void(0);' onclick='commentEdit(" + child.id + ", \"" + child.writer + "\", \"" + child.content + "\")'>댓글 수정</a>";
-                                    html += "</div>";
-                                }
+                        if (child.content != "삭제된 댓글입니다.") {
+                            if (child.writer == [[ ${student.nickname }]]) {
+                                html += "<div>";
+                                html += "<a href='javacript:void(0);' onclick='commentDelete(" + child.id + ")'>댓글 삭제</a>";
+                                html += "</div>";
+                                html += "<div>";
+                                html += "<a href='javacript:void(0);' onclick='commentEdit(" + child.id + ", \"" + child.writer + "\", \"" + child.content + "\")'>댓글 수정</a>";
+                                html += "</div>";
                             }
+                        }
+                        html += "</div>";
+                        html += "</div>";
+                        html += "</div>";
                     }
+                    html += "</div>";
                     html += "</div>";
                     html += "</div>";
                     html += "</div>";

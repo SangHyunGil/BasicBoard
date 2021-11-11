@@ -33,7 +33,7 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("student")
+    @GetMapping("/student")
     public String showStudent(Model model) {
         model.addAttribute("students", studentRepository.findAll());
 

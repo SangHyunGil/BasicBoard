@@ -83,16 +83,16 @@
     </div>
     <div class="wrapper">
         <div class="header">
-                <form class="form-group" th:method="get" th:action th:object="${searchCondition}">
+            <form class="form-group" th:method="get" th:action th:object="${searchCondition}">
+                <div class="search-bar">
                     <select id="searchType" name="searchType" th:field="*{type}">
                         <option th:each="searchType : ${T(register.demo.web.board.search.SearchType).values()}"
                                 th:text="${searchType.description}" th:value="${searchType}"></option>
                     </select>
-                    <div class="search-bar">
-                        <input class="form-control" type="text" placeholder="검색하기" th:field="*{content}" th:value="*{content}">
-                    </div>
-                </form>
-                <div class="user-settings">
+                    <input class="form-control" type="text" placeholder="검색하기" th:field="*{content}" th:value="*{content}">
+                </div>
+            </form>
+            <div class="user-settings">
                 <img class="user-img" src="https://images.unsplash.com/photo-1587918842454-870dbd18261a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=943&q=80" alt="">
                 <div class="user-name" th:text="${student.nickname}">Thomas</div>
                 <svg viewBox="0 0 492 492" fill="currentColor">
@@ -126,7 +126,10 @@
                     </div>
                 </div>
             </div>
-            <div class="small-header anim" style="--delay: .3s">게시판</div>
+            <div class="small-header anim" style="display:flex; --delay: .3s">게시판
+                <button class="like" style="margin-left: 10px" th:onclick="|location.href='@{/main/board(category=${T(register.demo.domain.category.CategoryType.FRONT)})}'|">프론트 게시판</button>
+                <button class="like" th:onclick="|location.href='@{/main/board(category=${T(register.demo.domain.category.CategoryType.BACK)})}'|">백엔드 게시판</button>
+            </div>
             <div class="videos">
                 <div class="video anim" style="--delay: .4s" th:each="board : ${boards.content}" th:if="${boards != null}" th:onclick="|location.href='@{/main/board/{id}(id=${board.id})}'|">
                     <div class="video-time" th:field="${board.id}" th:text="${board.id}"></div>
@@ -147,7 +150,7 @@
                     <div class="video-view" th:field="${board.hit}" th:text="|조회수 : ${board.hit}|"></div>
                 </div>
             </div>
-            <div th:if="${!boards.isEmpty()}">
+            <div class="paging-wrapper" th:if="${!boards.isEmpty()}">
                 <nav
                         th:with="pageNumber = ${boards.pageable.pageNumber},
                         pageSize = 5,
