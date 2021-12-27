@@ -2,7 +2,7 @@
 ## Class Diagram
 
 <p align = "center">
-    <img src = "https://github.com/SangHyunGil/BasicBoard/blob/master/img/diagram.png?raw=true">
+    <img src = "https://github.com/SangHyunGil/BasicBoard/blob/master/img/diagram.png?raw=true" width = 60%>
 </p>
 
 - Student Class
