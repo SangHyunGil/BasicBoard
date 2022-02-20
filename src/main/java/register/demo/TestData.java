@@ -4,19 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import register.demo.domain.board.Board;
-import register.demo.domain.board.BoardService;
-import register.demo.domain.category.CategoryType;
-import register.demo.domain.like.PostLikeService;
-import register.demo.domain.student.Student;
-import register.demo.domain.student.StudentService;
-import register.demo.web.board.dto.BoardPostDto;
-import register.demo.web.board.form.BoardAddForm;
-import register.demo.web.postlike.dto.PostLikeDto;
+import register.demo.board.service.BoardService;
+import register.demo.category.domain.CategoryType;
+import register.demo.like.service.PostLikeService;
+import register.demo.student.domain.Student;
+import register.demo.student.service.StudentService;
+import register.demo.board.controller.dto.BoardPostDto;
+import register.demo.board.controller.form.BoardAddForm;
+import register.demo.like.controller.dto.PostLikeDto;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Component
 @Profile("testData")

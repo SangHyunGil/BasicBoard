@@ -3,10 +3,8 @@ package register.demo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import register.demo.web.annotation.login.Login;
-import register.demo.web.login.LoginForm;
-import register.demo.web.session.SessionConst;
+import register.demo.common.annotation.login.Login;
+import register.demo.login.LoginForm;
 
 @Slf4j
 @Controller
